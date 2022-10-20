@@ -9,7 +9,7 @@ public class Grid
     public const int sortingOrderDefault = 5000;
     private float cellSize;
     private int[,] gridArray;
-    private TextMesh[,] debugTextArray;
+    private TextMesh[,] debugTextArray;//Debug
 
     public Grid(int width, int height, float cellSize)
     {
@@ -18,6 +18,7 @@ public class Grid
         this.cellSize = cellSize;
 
         gridArray = new int[width, height];
+        #region DebugItems
         debugTextArray = new TextMesh[width, height];
 
         for (int i = 0; i<gridArray.GetLength(0); i++)
@@ -31,6 +32,7 @@ public class Grid
         }
         Debug.DrawLine(GetWorldPosition(0, height), GetWorldPosition(width, height), Color.white, 100f);
         Debug.DrawLine(GetWorldPosition(width, 0), GetWorldPosition(width, height), Color.white, 100f);
+        #endregion
     }
 
     public Vector3 GetWorldPosition(int x, int y)
@@ -47,7 +49,7 @@ public class Grid
         }
     }//Directly to the array
 
-    private void GetXY(Vector3 worldPosition, out int x, out int y)
+    public void GetXY(Vector3 worldPosition, out int x, out int y)
     {
         x = Mathf.FloorToInt(worldPosition.x / cellSize);
         y = Mathf.FloorToInt(worldPosition.y / cellSize);

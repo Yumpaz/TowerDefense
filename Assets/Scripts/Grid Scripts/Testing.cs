@@ -6,9 +6,11 @@ public class Testing : MonoBehaviour
 {
 
     [SerializeField] private GameObject pcInstance;
+    [SerializeField] private GameObject iftsInstance, ifthInstance, iftkInstance;
     private Grid grid;
-    private GameObject pcObject;
-    private PowerCore pcScript;
+    private int type = 3;
+    //private GameObject pcObject, iftObject;
+    private int x, y;
 
     void Start()
     {
@@ -36,7 +38,7 @@ public class Testing : MonoBehaviour
         }
         #endregion
         #region TestingObjects
-        pcObject = Instantiate(pcInstance, grid.GetWorldPosition(17, 2) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+        Instantiate(pcInstance, grid.GetWorldPosition(17, 2) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
         #endregion
     }
 
@@ -46,7 +48,24 @@ public class Testing : MonoBehaviour
         {
             if (grid.GetValue(GetMouseWorldPosition()) == 1)
             {
-                grid.SetValue(GetMouseWorldPosition(), 4);
+                switch (type)
+                {
+                    case (0):
+                        grid.SetValue(GetMouseWorldPosition(), 0);
+                        grid.GetXY(GetMouseWorldPosition(), out x, out y);
+                        Instantiate(iftsInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+                        break;
+                    case (1):
+                        grid.SetValue(GetMouseWorldPosition(), 0);
+                        grid.GetXY(GetMouseWorldPosition(), out x, out y);
+                        Instantiate(ifthInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+                        break;
+                    case (2):
+                        grid.SetValue(GetMouseWorldPosition(), 0);
+                        grid.GetXY(GetMouseWorldPosition(), out x, out y);
+                        Instantiate(iftkInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+                        break;
+                }
             }
         }
     }
@@ -70,6 +89,21 @@ public class Testing : MonoBehaviour
     {
         Vector3 worldPosition = worldCamera.ScreenToWorldPoint(screenPosition);
         return worldPosition;
+    }
+
+    public void SetType0()
+    {
+        type = 0;
+    }
+
+    public void SetType1()
+    {
+        type = 1;
+    }
+
+    public void SetType2()
+    {
+        type = 2;
     }
     #endregion
 }
