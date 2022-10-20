@@ -5,6 +5,12 @@ using UnityEngine;
 public class InfantryHeavy : MonoBehaviour
 {
     private int life, attack, speed, cost, range, type;
+    public static InfantryHeavy Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -18,5 +24,9 @@ public class InfantryHeavy : MonoBehaviour
     private void Update()
     {
 
+    }
+    public int GetCost()
+    {
+        return cost;
     }
 }
