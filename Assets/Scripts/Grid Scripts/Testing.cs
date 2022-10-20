@@ -8,9 +8,9 @@ public class Testing : MonoBehaviour
 
     [SerializeField] private GameObject pcInstance;
     [SerializeField] private GameObject iftsInstance, ifthInstance, iftkInstance, twhInstance, twsInstance;
-    [SerializeField] private TextMeshProUGUI tcredits;
+    [SerializeField] private TextMeshProUGUI tcredits, tecredits;
     private Grid grid;
-    private int type = 3, credits, cost;
+    private int type = 3, credits, cost, enemycredits, enemycost, random;
     private GameState _gameState = GameState.prepare;
     //private GameObject pcObject, iftObject;
     private int x, y;
@@ -44,6 +44,7 @@ public class Testing : MonoBehaviour
         Instantiate(pcInstance, grid.GetWorldPosition(17, 2) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
         #endregion
         credits = 15;
+        enemycredits = 15;
     }
 
     private void Update()
@@ -95,7 +96,24 @@ public class Testing : MonoBehaviour
                 }
                 #endregion
                 #region EnemyPrepare
+                while (enemycredits > 0)
+                {
+                    tecredits.text = "Enemy Credits: " + enemycredits;
+                    for (int i = 12; i < 18; i++)
+                    {
+                        for (int j = 0; j < 5; j++)
+                        {
+                            random = Random.Range(0,1);
+                            if(random == 1)
+                            {
+                                if (grid.GetValue(GetMouseWorldPosition()) == 2)
+                                {
 
+                                }
+                            }
+                        }
+                    }
+                }
                 #endregion
                 break;
             #endregion
