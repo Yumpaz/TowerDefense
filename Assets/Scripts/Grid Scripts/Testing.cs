@@ -7,7 +7,7 @@ public class Testing : MonoBehaviour
 {
 
     [SerializeField] private GameObject pcInstance;
-    [SerializeField] private GameObject iftsInstance, ifthInstance, iftkInstance;
+    [SerializeField] private GameObject iftsInstance, ifthInstance, iftkInstance, twhInstance, twsInstance;
     [SerializeField] private TextMeshProUGUI tcredits;
     private Grid grid;
     private int type = 3, credits, cost;
@@ -52,6 +52,7 @@ public class Testing : MonoBehaviour
         {
             #region Prepare
             case GameState.prepare:
+                #region PlayerPrepare
                 tcredits.text = "Credits: " + credits;
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -66,6 +67,7 @@ public class Testing : MonoBehaviour
                                     grid.SetValue(GetMouseWorldPosition(), 0);
                                     grid.GetXY(GetMouseWorldPosition(), out x, out y);
                                     Instantiate(iftsInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+                                    credits -= cost;
                                 }
                                 break;
                             case (1):
@@ -74,7 +76,8 @@ public class Testing : MonoBehaviour
                                 {
                                     grid.SetValue(GetMouseWorldPosition(), 0);
                                     grid.GetXY(GetMouseWorldPosition(), out x, out y);
-                                    Instantiate(ifthInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity); 
+                                    Instantiate(ifthInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+                                    credits -= cost;
                                 }
                                 break;
                             case (2):
@@ -84,12 +87,16 @@ public class Testing : MonoBehaviour
                                     grid.SetValue(GetMouseWorldPosition(), 0);
                                     grid.GetXY(GetMouseWorldPosition(), out x, out y);
                                     Instantiate(iftkInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+                                    credits -= cost;
                                 }
                                 break;
                         }
-                        credits -= cost;
                     }
                 }
+                #endregion
+                #region EnemyPrepare
+
+                #endregion
                 break;
             #endregion
             #region Play
