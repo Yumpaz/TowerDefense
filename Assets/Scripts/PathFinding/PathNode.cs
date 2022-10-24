@@ -30,6 +30,16 @@ public class PathNode : MonoBehaviour
         this.value = value;
     }
 
+    public int GetX()
+    {
+        return x;
+    }
+
+    public int GetY()
+    {
+        return y;
+    }
+
     public void CalculatefCost()
     {
         fCost = gCost + hCost;
