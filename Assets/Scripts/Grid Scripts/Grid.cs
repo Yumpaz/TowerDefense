@@ -155,6 +155,16 @@ public class Grid<GridObject>
         return GetGridObject(x, y);
     }//In a specific posistion
 
+    public int GetWidth()
+    {
+        return width;
+    }
+
+    public int GetHeight()
+    {
+        return height;
+    }
+
     public float GetCellSize()
     {
         return cellSize;

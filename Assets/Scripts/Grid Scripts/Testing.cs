@@ -9,7 +9,7 @@ public class Testing : MonoBehaviour
     [SerializeField] private GameObject pcInstance;
     [SerializeField] private GameObject iftsInstance, ifthInstance, iftkInstance, twhInstance, twsInstance;
     [SerializeField] private TextMeshProUGUI tcredits, tecredits;
-    private Grid<int> grid;
+    Pathfinding pathfinding;
     private int type = 3, credits, cost, enemycredits, enemycost, random, random2, randomx, randomy;
     private GameState _gameState = GameState.prepare;
     //private GameObject pcObject, iftObject;
@@ -18,12 +18,12 @@ public class Testing : MonoBehaviour
     void Start()
     {
         #region BuildingGrid
-        grid = new Grid<int>(18, 5, 10f, () => new int());
+        pathfinding = new Pathfinding(18, 5, 0);
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 5; j++)
             {
-                grid.SetGridObject(i, j, 1);
+                pathfinding.SetNodeValue(i, j, new PathNode(pathfinding.GetGrid(), i, j, 1));
             }
         }
 
@@ -31,18 +31,19 @@ public class Testing : MonoBehaviour
         {
             for (int j = 0; j < 5; j++)
             {
-                grid.SetGridObject(i, j, 2);
+                pathfinding.SetNodeValue(i, j, new PathNode(pathfinding.GetGrid(), i, j, 2));
             }
         }
 
         for (int i = 1; i < 4; i++)
         {
-            grid.SetGridObject(15, i, 3);
+            pathfinding.SetNodeValue(15, i, new PathNode(pathfinding.GetGrid(), 15, i, 3));
         }
         #endregion
         #region TestingObjects
-        Instantiate(pcInstance, grid.GetWorldPosition(17, 2) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
-        grid.SetGridObject(grid.GetWorldPosition(17, 2), 0);
+        Instantiate(pcInstance, pathfinding.GetGrid().GetWorldPosition(17, 2) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                    pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+        pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(17, 2), new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
         #endregion
         credits = 15;
         enemycredits = 15;
@@ -52,21 +53,25 @@ public class Testing : MonoBehaviour
             tecredits.text = "Enemy Credits: " + enemycredits;
             randomx = Random.Range(12, 18);
             randomy = Random.Range(0, 5);
-            if (grid.GetGridObject(randomx, randomy) == 2)
+            if (pathfinding.GetGrid().GetGridObject(randomx, randomy).GetValue() == 2)
             {
                 random = Random.Range(0, 2);
                 if (random == 0)
                 {
                     enemycost = 2;
-                    Instantiate(twsInstance, grid.GetWorldPosition(randomx, randomy) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
-                    grid.SetGridObject(grid.GetWorldPosition(randomx, randomy), 0);
+                    Instantiate(twsInstance, pathfinding.GetGrid().GetWorldPosition(randomx, randomy) + new Vector3(pathfinding.GetGrid().GetCellSize(), 
+                                pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                    pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy), 
+                                                        new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
                     enemycredits -= enemycost;
                 }
                 else
                 {
                     enemycost = 3;
-                    Instantiate(twhInstance, grid.GetWorldPosition(randomx, randomy) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
-                    grid.SetGridObject(grid.GetWorldPosition(randomx, randomy), 0);
+                    Instantiate(twhInstance, pathfinding.GetGrid().GetWorldPosition(randomx, randomy) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                    pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
+                                                        new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
                     enemycredits -= enemycost;
                 }
             }
@@ -85,7 +90,7 @@ public class Testing : MonoBehaviour
                 tcredits.text = "Credits: " + credits;
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (grid.GetGridObject(GetMouseWorldPosition()) == 1)
+                    if (pathfinding.GetGrid().GetGridObject(GetMouseWorldPosition()).GetValue() == 1)
                     {
                         switch (type)
                         {
@@ -93,9 +98,10 @@ public class Testing : MonoBehaviour
                                 cost = 1;
                                 if (credits >= cost)
                                 {
-                                    grid.SetGridObject(GetMouseWorldPosition(), 0);
-                                    grid.GetXY(GetMouseWorldPosition(), out x, out y);
-                                    Instantiate(iftsInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+                                    pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
+                                    pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
+                                    Instantiate(iftsInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                                pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
                                     credits -= cost;
                                 }
                                 break;
@@ -103,9 +109,10 @@ public class Testing : MonoBehaviour
                                 cost = 2;
                                 if (credits >= cost)
                                 {
-                                    grid.SetGridObject(GetMouseWorldPosition(), 0);
-                                    grid.GetXY(GetMouseWorldPosition(), out x, out y);
-                                    Instantiate(ifthInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+                                    pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
+                                    pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
+                                    Instantiate(ifthInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                                pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
                                     credits -= cost;
                                 }
                                 break;
@@ -113,9 +120,10 @@ public class Testing : MonoBehaviour
                                 cost = 3;
                                 if (credits >= cost)
                                 {
-                                    grid.SetGridObject(GetMouseWorldPosition(), 0);
-                                    grid.GetXY(GetMouseWorldPosition(), out x, out y);
-                                    Instantiate(iftkInstance, grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * .5f, Quaternion.identity);
+                                    pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
+                                    pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
+                                    Instantiate(iftkInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                                pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
                                     credits -= cost;
                                 }
                                 break;
