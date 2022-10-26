@@ -7,9 +7,8 @@ public class PathNode : MonoBehaviour
 
     private Grid<PathNode> grid;
     private int x, y, value;
-
     public int gCost, hCost, fCost;
-
+    public bool isWalkable;
     public PathNode cameFromNode;
 
     public PathNode(Grid<PathNode> grid, int x, int y, int value)
@@ -18,6 +17,7 @@ public class PathNode : MonoBehaviour
         this.x = x;
         this.y = y;
         this.value = value;
+        isWalkable = true;
     }
 
     public int GetValue()
@@ -43,6 +43,12 @@ public class PathNode : MonoBehaviour
     public void CalculatefCost()
     {
         fCost = gCost + hCost;
+    }
+
+    public void SetIsWalkable(bool isWalkable)
+    {
+        this.isWalkable = isWalkable;
+        grid.TriggerGridObjectChanged(x, y);
     }
 
     public override string ToString()

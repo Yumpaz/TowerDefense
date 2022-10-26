@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InfantryKiller : MonoBehaviour
 {
-    private int life, attack, speed, cost, range, type;
+    private int life, attack, speed, cost, range, type, x, y;
 
     void Start()
     {
@@ -15,8 +15,24 @@ public class InfantryKiller : MonoBehaviour
         range = 1;
     }
 
+    public void UpdatePosition(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int GetX()
+    {
+        return x;
+    }
+
+    public int GetY()
+    {
+        return y;
+    }
+
     private void Update()
     {
-
+        
     }
 }

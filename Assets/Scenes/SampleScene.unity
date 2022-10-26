@@ -1039,6 +1039,7 @@ MonoBehaviour:
   iftkInstance: {fileID: 1181050164647640509, guid: 37ded7d1572fb724d91e0ca40df62b11, type: 3}
   twhInstance: {fileID: 8522123290169709885, guid: bde199e2bdb10494f88dfdf81294c653, type: 3}
   twsInstance: {fileID: 6715869514154975833, guid: ebb54f91fca43cb4d969f6860cafcd2f, type: 3}
+  wallInstance: {fileID: 8214891877496034942, guid: cf532743f5bc35a43b0b9e59fcaeab22, type: 3}
   tcredits: {fileID: 817470981}
   tecredits: {fileID: 1190024649}
 --- !u!4 &909146310

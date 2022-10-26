@@ -4,12 +4,28 @@ using UnityEngine;
 
 public class PowerCore : MonoBehaviour
 {
-    private int life, cost;
+    private int life, cost, x, y;
 
     private void Awake()
     {
         life = 14;
         cost = 0;
+    }
+
+    public void UpdatePosition(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int GetX()
+    {
+        return x;
+    }
+
+    public int GetY()
+    {
+        return y;
     }
 
     private void Update()

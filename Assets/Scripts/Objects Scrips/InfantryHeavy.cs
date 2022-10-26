@@ -4,13 +4,7 @@ using UnityEngine;
 
 public class InfantryHeavy : MonoBehaviour
 {
-    private int life, attack, speed, cost, range, type;
-    public static InfantryHeavy Instance;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
+    private int life, attack, speed, cost, range, type, x, y;
 
     void Start()
     {
@@ -21,12 +15,24 @@ public class InfantryHeavy : MonoBehaviour
         range = 2;
     }
 
+    public void UpdatePosition(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int GetX()
+    {
+        return x;
+    }
+
+    public int GetY()
+    {
+        return y;
+    }
+
     private void Update()
     {
-
-    }
-    public int GetCost()
-    {
-        return cost;
+        
     }
 }
