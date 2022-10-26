@@ -31,6 +31,11 @@ public class TowerSmall : MonoBehaviour
         return y;
     }
 
+    public void Delete(Grid<PathNode> grid)
+    {
+        grid.SetGridObject(x, y, new PathNode(grid, x, y, 2));
+    }
+
     private void Update()
     {
         

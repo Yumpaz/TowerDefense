@@ -11,6 +11,7 @@ public class Pathfinding
     private Grid<PathNode> grid;
     private List<PathNode> openList;
     private List<PathNode> closedList;
+    private int pathCost;
 
     public Pathfinding(int width, int height, int value)
     {
@@ -58,43 +59,35 @@ public class Pathfinding
                 Debug.Log("PathFound");
                 return CalculatePath(endNode);
             }
-            Debug.Log("Is diferent");
             openList.Remove(currentNode);
             closedList.Add(currentNode);
             foreach (PathNode neighbourNode in GetNeighbourList(currentNode))
             {
-                if (closedList.Contains(neighbourNode))
+                if (!closedList.Contains(neighbourNode))
                 {
-                    Debug.Log("YalotieneVecino");
-                    continue;
-                }
-
-                if (!neighbourNode.isWalkable)
-                {
-                    Debug.Log("Poraquinomano");
-                    closedList.Add(neighbourNode);
-                    continue;
-                }
-
-                int tentativegCost = currentNode.gCost + CalculateDistanceCost(currentNode, neighbourNode);
-                Debug.Log(tentativegCost+" - "+currentNode.gCost);
-                if (tentativegCost < neighbourNode.gCost)
-                {
-                    Debug.Log("Esta es la buena mijo");
-                    neighbourNode.cameFromNode = currentNode;
-                    neighbourNode.gCost = tentativegCost;
-                    neighbourNode.hCost = CalculateDistanceCost(neighbourNode, endNode);
-                    neighbourNode.CalculatefCost();
-
-                    if (!openList.Contains(neighbourNode))
+                    if (!neighbourNode.isWalkable && neighbourNode != endNode)
                     {
-                        Debug.Log("AgregandoVecino");
-                        openList.Add(neighbourNode);
+                        closedList.Add(neighbourNode);
+                    }
+                    else
+                    {
+                        int tentativegCost = currentNode.gCost + CalculateDistanceCost(currentNode, neighbourNode);
+                        if (tentativegCost < neighbourNode.gCost)
+                        {
+                            neighbourNode.cameFromNode = currentNode;
+                            neighbourNode.gCost = tentativegCost;
+                            neighbourNode.hCost = CalculateDistanceCost(neighbourNode, endNode);
+                            neighbourNode.CalculatefCost();
+
+                            if (!openList.Contains(neighbourNode))
+                            {
+                                openList.Add(neighbourNode);
+                            }
+                        }
                     }
                 }
             }
         }
-
         //Out of nodes on the openList
         return null;
     }
@@ -107,7 +100,6 @@ public class Pathfinding
     private List<PathNode> GetNeighbourList(PathNode currentNode)
     {
         List<PathNode> neighbourList = new List<PathNode>();
-        Debug.Log("Creando vecinos");
         if (currentNode.GetX() - 1 >= 0)
         {
             //Left
@@ -154,18 +146,24 @@ public class Pathfinding
 
     private List<PathNode> CalculatePath(PathNode endNode)
     {
+        pathCost = 0;
         List<PathNode> path = new List<PathNode>();
         path.Add(endNode);
+        pathCost += endNode.fCost;
         PathNode currentNode = endNode;
         while (currentNode.cameFromNode != null)
         {
-            Debug.Log("Agregado nodo");
             path.Add(currentNode.cameFromNode);
             currentNode = currentNode.cameFromNode;
+            pathCost += currentNode.fCost;
         }
-
         path.Reverse();
         return path;
+    }
+
+    public int GetPathCost()
+    {
+        return pathCost;
     }
 
     private int CalculateDistanceCost(PathNode a, PathNode b)

@@ -10,7 +10,8 @@ public class Testing : MonoBehaviour
     [SerializeField] private TextMeshProUGUI tcredits, tecredits;
     private bool SelectionActive = false;
     private Pathfinding pathfinding;
-    private int type = 3, credits, cost, enemycredits, enemycost, random, randomx, randomy;
+    List<PathNode> minpath;
+    private int type = 3, credits, cost, enemycredits, enemycost, random, randomx, randomy, minpathCost;
     private GameState _gameState = GameState.prepare;
     #region Lists
     private List<GameObject> PWUnits = new List<GameObject>();
@@ -58,13 +59,14 @@ public class Testing : MonoBehaviour
                         pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
         }
         #endregion
-        #region TestingObjects
+        #region PowerCore
         Object1 = Instantiate(pcInstance, pathfinding.GetGrid().GetWorldPosition(17, 2) + new Vector3(pathfinding.GetGrid().GetCellSize(),
                               pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
         pcscript = Object1.GetComponent<PowerCore>();
         pcscript.UpdatePosition(17, 2);
+        pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(17, 2), new PathNode(pathfinding.GetGrid(), 17, 2, 0));
+        pathfinding.GetNode(17, 2).SetIsWalkable(!pathfinding.GetNode(17, 2).isWalkable);
         PWUnits.Add(Object1);
-        pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(17, 2), new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
         #endregion
         credits = 15;
         enemycredits = 15;
@@ -89,6 +91,7 @@ public class Testing : MonoBehaviour
                         TWSUnits.Add(Object1);
                         pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
                                                             new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
+                        pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
                         enemycredits -= enemycost;
                     }
                 }
@@ -104,6 +107,7 @@ public class Testing : MonoBehaviour
                         TWHUnits.Add(Object1);
                         pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
                                                             new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
+                        pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
                         enemycredits -= enemycost;
                     }
                 }
@@ -132,14 +136,13 @@ public class Testing : MonoBehaviour
                                 if (credits >= cost)
                                 {
                                     pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
-                                    //x = Mathf.FloorToInt(GetMouseWorldPosition().x / pathfinding.GetGrid().GetCellSize());
-                                    //y = Mathf.FloorToInt(GetMouseWorldPosition().y / pathfinding.GetGrid().GetCellSize());
                                     pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), x, y, 0));
                                     Object1 = Instantiate(iftsInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
-                                                pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                                                          pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
                                     iftsscript = Object1.GetComponent<InfantrySmall>();
                                     iftsscript.UpdatePosition(x, y);
                                     IFTSUnits.Add(Object1);
+                                    pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
                                     credits -= cost;
                                 }
                                 break;
@@ -148,14 +151,13 @@ public class Testing : MonoBehaviour
                                 if (credits >= cost)
                                 {
                                     pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
-                                    //x = Mathf.FloorToInt(GetMouseWorldPosition().x / pathfinding.GetGrid().GetCellSize());
-                                    //y = Mathf.FloorToInt(GetMouseWorldPosition().y / pathfinding.GetGrid().GetCellSize());
                                     pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), x, y, 0));
                                     Object1 = Instantiate(ifthInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
-                                                pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                                                          pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
                                     ifthscript = Object1.GetComponent<InfantryHeavy>();
                                     ifthscript.UpdatePosition(x, y); ;
                                     IFTHUnits.Add(Object1);
+                                    pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
                                     credits -= cost;
                                 }
                                 break;
@@ -164,14 +166,13 @@ public class Testing : MonoBehaviour
                                 if (credits >= cost)
                                 {
                                     pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
-                                    //x = Mathf.FloorToInt(GetMouseWorldPosition().x / pathfinding.GetGrid().GetCellSize());
-                                    //y = Mathf.FloorToInt(GetMouseWorldPosition().y / pathfinding.GetGrid().GetCellSize());
                                     pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), x, y, 0));
                                     Object1 = Instantiate(iftkInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
-                                                pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                                                          pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
                                     iftkscript = Object1.GetComponent<InfantryKiller>();
                                     iftkscript.UpdatePosition(x, y);
                                     IFTKUnits.Add(Object1);
+                                    pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
                                     credits -= cost;
                                 }
                                 break;
@@ -184,8 +185,10 @@ public class Testing : MonoBehaviour
             #endregion
             #region Play
             case GameState.play:
+                #region InfantrySmall
                 foreach (GameObject currentUnit in IFTSUnits)
                 {
+                    minpathCost = 999999999;
                     foreach (GameObject enemyUnit in TWSUnits)
                     {
                         List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
@@ -194,14 +197,142 @@ public class Testing : MonoBehaviour
                                                                    enemyUnit.GetComponent<TowerSmall>().GetY());
                         if (path != null)
                         {
-                            for(int i = 0; i < path.Count - 1; i++)
+                            if(pathfinding.GetPathCost() < minpathCost)
                             {
-                                Debug.DrawLine(new Vector3(path[i].GetX(), path[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(path[i + 1].GetX(),
-                                               path[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.red, 5f);
+                                minpathCost = pathfinding.GetPathCost();
+                                minpath = path;
                             }
                         }
                     }
+                    foreach (GameObject enemyUnit in TWHUnits)
+                    {
+                        List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
+                                                                   currentUnit.GetComponent<InfantrySmall>().GetY(),
+                                                                   enemyUnit.GetComponent<TowerHeavy>().GetX(),
+                                                                   enemyUnit.GetComponent<TowerHeavy>().GetY());
+                        if (path != null)
+                        {
+                            if (pathfinding.GetPathCost() < minpathCost)
+                            {
+                                minpathCost = pathfinding.GetPathCost();
+                                minpath = path;
+                            }
+                        }
+                    }
+                    if (TWSUnits.Count < 1 && TWHUnits.Count < 1)
+                    {
+                        foreach (GameObject enemyUnit in PWUnits)
+                        {
+                            List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
+                                                                       currentUnit.GetComponent<InfantrySmall>().GetY(),
+                                                                       enemyUnit.GetComponent<PowerCore>().GetX(),
+                                                                       enemyUnit.GetComponent<PowerCore>().GetY());
+                            if (path != null)
+                            {
+                                if (pathfinding.GetPathCost() < minpathCost)
+                                {
+                                    minpathCost = pathfinding.GetPathCost();
+                                    minpath = path;
+                                }
+                            }
+                        }
+                    }
+                    for (int i = 0; i < minpath.Count - 1; i++)
+                    {
+                        Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
+                                       minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.yellow, 5f);
+                    }
                 }
+                #endregion
+                #region InfantryHeavy
+                foreach (GameObject currentUnit in IFTHUnits)
+                {
+                    minpathCost = 999999999;
+                    foreach (GameObject enemyUnit in TWSUnits)
+                    {
+                        List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantryHeavy>().GetX(),
+                                                                   currentUnit.GetComponent<InfantryHeavy>().GetY(),
+                                                                   enemyUnit.GetComponent<TowerSmall>().GetX(),
+                                                                   enemyUnit.GetComponent<TowerSmall>().GetY());
+                        if (path != null)
+                        {
+                            if (pathfinding.GetPathCost() < minpathCost)
+                            {
+                                minpathCost = pathfinding.GetPathCost();
+                                minpath = path;
+                            }
+                        }
+                    }
+                    foreach (GameObject enemyUnit in TWHUnits)
+                    {
+                        List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantryHeavy>().GetX(),
+                                                                   currentUnit.GetComponent<InfantryHeavy>().GetY(),
+                                                                   enemyUnit.GetComponent<TowerHeavy>().GetX(),
+                                                                   enemyUnit.GetComponent<TowerHeavy>().GetY());
+                        if (path != null)
+                        {
+                            if (pathfinding.GetPathCost() < minpathCost)
+                            {
+                                minpathCost = pathfinding.GetPathCost();
+                                minpath = path;
+                            }
+                        }
+                    }
+                    if (TWSUnits.Count < 1 && TWHUnits.Count < 1)
+                    {
+                        foreach (GameObject enemyUnit in PWUnits)
+                        {
+                            List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantryHeavy>().GetX(),
+                                                                       currentUnit.GetComponent<InfantryHeavy>().GetY(),
+                                                                       enemyUnit.GetComponent<PowerCore>().GetX(),
+                                                                       enemyUnit.GetComponent<PowerCore>().GetY());
+                            if (path != null)
+                            {
+                                if (pathfinding.GetPathCost() < minpathCost)
+                                {
+                                    minpathCost = pathfinding.GetPathCost();
+                                    minpath = path;
+                                }
+                            }
+                        }
+                    }
+                    for (int i = 0; i < minpath.Count - 1; i++)
+                    {
+                        Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
+                                       minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.blue, 5f);
+                    }
+                }
+                #endregion
+                #region InfantryKiller
+                foreach (GameObject currentUnit in IFTKUnits)
+                {
+                    minpathCost = 999999999;
+                    foreach (GameObject enemyUnit in PWUnits)
+                    {
+                        List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantryKiller>().GetX(),
+                                                                   currentUnit.GetComponent<InfantryKiller>().GetY(),
+                                                                   enemyUnit.GetComponent<PowerCore>().GetX(),
+                                                                   enemyUnit.GetComponent<PowerCore>().GetY());
+                        if (path != null)
+                        {
+                            if (pathfinding.GetPathCost() < minpathCost)
+                            {
+                                minpathCost = pathfinding.GetPathCost();
+                                minpath = path;
+                            }
+                        }
+                    }
+                    Debug.Log("Objetivo: " + minpath[minpath.Count - 1].GetX() + " " + minpath[minpath.Count - 1].GetY());
+                    for (int i = 0; i < minpath.Count - 1; i++)
+                    {
+                        Debug.Log("The path");                        
+                        Debug.Log(minpath[i].GetX() + " " + minpath[i].GetY());
+                        Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
+                                       minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.black, 5f);
+                        Debug.Log("Donef");
+                    }
+                }
+                #endregion
                 break;
             #endregion
             #region End
@@ -217,6 +348,11 @@ public class Testing : MonoBehaviour
         prepare,
         play,
         end
+    }
+
+    public GameState GetGameState()
+    {
+        return _gameState;
     }
 
     public void UpdateGameState(GameState gameState)

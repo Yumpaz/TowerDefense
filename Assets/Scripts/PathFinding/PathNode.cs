@@ -51,6 +51,24 @@ public class PathNode
         grid.TriggerGridObjectChanged(x, y);
     }
 
+    public bool UnitCheck(int x, int y, TowerSmall unit)
+    {
+        if (unit.GetX() == x && unit.GetY() == y)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool UnitCheck(int x, int y, TowerHeavy unit)
+    {
+        if (unit.GetX() == x && unit.GetY() == y)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public override string ToString()
     {
         return value.ToString();
