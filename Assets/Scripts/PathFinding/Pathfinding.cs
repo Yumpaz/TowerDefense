@@ -31,6 +31,7 @@ public class Pathfinding
         return grid;
     }
 
+    #region FindPath
     public List<Vector3> FindPath(Vector3 StartWorldPosition, Vector3 EndWorldPosition)
     {
         grid.GetXY(StartWorldPosition, out int startX, out int startY);
@@ -80,7 +81,6 @@ public class Pathfinding
             PathNode currentNode = GetLowestfCostNode(openList);
             if (currentNode == endNode)
             {
-                Debug.Log("PathFound");
                 return CalculatePath(endNode);
             }
             openList.Remove(currentNode);
@@ -211,4 +211,133 @@ public class Pathfinding
         }
         return lowestfCostNode;
     }
+    #endregion
+
+    #region InRange
+    public List<PathNode> GetNodesInRange(PathNode currentNode, int range)
+    {
+        List<PathNode> rangeList = new List<PathNode>();
+        //Left
+        for (int i = 1; i <= range; i++)
+        {
+            if(currentNode.GetX() - i >= 0)
+            {
+                if (GetNode(currentNode.GetX() - i, currentNode.GetY()).GetValue() != 3)
+                {
+                    rangeList.Add(GetNode(currentNode.GetX() - i, currentNode.GetY()));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        //Left Down
+        for (int i = 1; i <= range; i++)
+        {
+            if (currentNode.GetX() - i >= 0 && currentNode.GetY() - i >= 0)
+            {
+                if (GetNode(currentNode.GetX() - i, currentNode.GetY() - i).GetValue() != 3)
+                {
+                    rangeList.Add(GetNode(currentNode.GetX() - i, currentNode.GetY() - i));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        //Left Up
+        for (int i = 1; i <= range; i++)
+        {
+            if (currentNode.GetX() - i >= 0 && currentNode.GetY() + i < grid.GetHeight())
+            {
+                if (GetNode(currentNode.GetX() - i, currentNode.GetY() + i).GetValue() != 3)
+                {
+                    rangeList.Add(GetNode(currentNode.GetX() - i, currentNode.GetY() + i));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        //Right
+        for (int i = 1; i <= range; i++)
+        {
+            if (currentNode.GetX() + i < grid.GetWidth())
+            {
+                if (GetNode(currentNode.GetX() + i, currentNode.GetY()).GetValue() != 3)
+                {
+                    rangeList.Add(GetNode(currentNode.GetX() + i, currentNode.GetY()));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        //Right Down
+        for (int i = 1; i <= range; i++)
+        {
+            if (currentNode.GetX() + i < grid.GetWidth() && currentNode.GetY() - i >= 0)
+            {
+                if (GetNode(currentNode.GetX() + i, currentNode.GetY() - i).GetValue() != 3)
+                {
+                    rangeList.Add(GetNode(currentNode.GetX() + i, currentNode.GetY() - i));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        //Right Up
+        for (int i = 1; i <= range; i++)
+        {
+            if (currentNode.GetX() + i < grid.GetWidth() && currentNode.GetY() + i < grid.GetHeight())
+            {
+                if (GetNode(currentNode.GetX() + i, currentNode.GetY() + i).GetValue() != 3)
+                {
+                    rangeList.Add(GetNode(currentNode.GetX() + i, currentNode.GetY() + i));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        //Up
+        for (int i = 1; i <= range; i++)
+        {
+            if (currentNode.GetY() + i < grid.GetHeight())
+            {
+                if (GetNode(currentNode.GetX(), currentNode.GetY() + i).GetValue() != 3)
+                {
+                    rangeList.Add(GetNode(currentNode.GetX(), currentNode.GetY() + i));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        //Down
+        for (int i = 1; i <= range; i++)
+        {
+            if (currentNode.GetY() - i >= 0)
+            {
+                if (GetNode(currentNode.GetX(), currentNode.GetY() - i).GetValue() != 3)
+                {
+                    rangeList.Add(GetNode(currentNode.GetX(), currentNode.GetY() - i));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        return rangeList;
+    }
+    #endregion
 }

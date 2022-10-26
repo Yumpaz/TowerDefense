@@ -76,7 +76,7 @@ public class Testing : MonoBehaviour
                                           pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
                     pcscript = Object1.GetComponent<PowerCore>();
                     pcscript.UpdatePosition(17, 2);
-                    pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(17, 2), new PathNode(pathfinding.GetGrid(), 17, 2, 0));
+                    pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(17, 2), new PathNode(pathfinding.GetGrid(), 17, 2, 5));
                     pathfinding.GetNode(17, 2).SetIsWalkable(!pathfinding.GetNode(17, 2).isWalkable);
                     PWUnits.Add(Object1);
                     #endregion
@@ -100,7 +100,7 @@ public class Testing : MonoBehaviour
                                     twsscript.UpdatePosition(randomx, randomy);
                                     TWSUnits.Add(Object1);
                                     pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
-                                                                        new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
+                                                                        new PathNode(pathfinding.GetGrid(), randomx, randomy, 4));
                                     pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
                                     enemycredits -= enemycost;
                                 }
@@ -116,7 +116,7 @@ public class Testing : MonoBehaviour
                                     twhscript.UpdatePosition(randomx, randomy);
                                     TWHUnits.Add(Object1);
                                     pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
-                                                                        new PathNode(pathfinding.GetGrid(), randomx, randomy, 0));
+                                                                        new PathNode(pathfinding.GetGrid(), randomx, randomy, 4));
                                     pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
                                     enemycredits -= enemycost;
                                 }
@@ -330,6 +330,7 @@ public class Testing : MonoBehaviour
                     currentUnit.GetComponent<InfantryKiller>().SetTargetPosition(new Vector3(minpath[minpath.Count - 1].GetX(), minpath[minpath.Count - 1].GetY()) * 10f + Vector3.one * 5f);
                 }
                 #endregion
+                #region ClickDelete
                 if (Input.GetMouseButtonDown(0))
                 {
                     pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
@@ -354,6 +355,7 @@ public class Testing : MonoBehaviour
                 {
                     UpdateGameState(GameState.end);
                 }
+                #endregion
                 break;
             #endregion
             #region End

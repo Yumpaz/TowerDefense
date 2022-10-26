@@ -8,6 +8,8 @@ public class InfantrySmall : MonoBehaviour
     private List<Vector3> pathVectorList;
     [SerializeField] private GameObject bullet, bulletInstance;
     private BulletBehaviour bulletscript;
+    private List<PathNode> NodesInRange;
+    private bool canMove = true;
 
     void Start()
     {
@@ -42,7 +44,7 @@ public class InfantrySmall : MonoBehaviour
     {
         return transform.position;
     }
-    
+
     public void SetTargetPosition(Vector3 targetPosition)
     {
         currentPathIndex = 0;
@@ -57,14 +59,14 @@ public class InfantrySmall : MonoBehaviour
 
     private void Movement()
     {
-        if(pathVectorList != null)
+        if (pathVectorList != null && canMove)
         {
             Vector3 targetPosition = pathVectorList[currentPathIndex];
             if (Vector3.Distance(transform.position, targetPosition) > 1f)
             {
                 Vector3 moveDir = (targetPosition - transform.position).normalized;
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
-                transform.position = transform.position + moveDir * speed * Time.deltaTime;
+                transform.position = transform.position + speed * Time.deltaTime * moveDir;
             }
             else
             {
@@ -84,24 +86,40 @@ public class InfantrySmall : MonoBehaviour
     #endregion
 
     #region AttackFunctions
-
-    public void EnemyInRange(Vector3 myPosition, Vector3 targetVector)
+    private void GetCurrentNode()
     {
-        if (myPosition == targetVector)
+        PathNode currentNode = Pathfinding.Instance.GetGrid().GetGridObject(GetPosition());
+        Debug.Log("Current Node: " + currentNode.GetX() + " " + currentNode.GetY());
+        NodesInRange = Pathfinding.Instance.GetNodesInRange(currentNode, range);
+        StartShooting();
+
+    }
+
+    private void StartShooting()
+    {
+        foreach (PathNode node in NodesInRange)
         {
-            StopMoving();
-            StartShooting(targetVector);
+            if (node.GetValue() == 4)
+            {
+                Debug.Log(node.GetValue());
+                canMove = false;
+                //StartAttacking();
+            }
         }
     }
 
-    #region StartShooting
-    private void StartShooting(Vector3 targetPosition)
+    private void StartAttacking()
     {
-        bulletInstance = Instantiate(bullet, this.transform.position, Quaternion.identity);
-        bulletscript = bulletInstance.GetComponent<BulletBehaviour>();
-        bulletscript.Movement(targetPosition, this.transform.position);
+        foreach (PathNode node in NodesInRange)
+        {
+            if (node.GetValue() == 4)
+            {
+                Debug.Log(node.GetValue());
+                canMove = false;
+                //StartAttacking();
+            }
+        }
     }
-    #endregion
     #endregion
     public void Delete(Grid<PathNode> grid)
     {
@@ -111,6 +129,6 @@ public class InfantrySmall : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+        GetCurrentNode();
     }
 }
