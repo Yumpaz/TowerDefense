@@ -52,9 +52,8 @@ public class Pathfinding
 
         while (openList.Count > 0)
         {
-            Debug.Log("Here I AM");
             PathNode currentNode = GetLowestfCostNode(openList);
-            if (currentNode.GetX() == endNode.GetX() && currentNode.GetY() == endNode.GetY())
+            if (currentNode == endNode)
             {
                 Debug.Log("PathFound");
                 return CalculatePath(endNode);
@@ -62,11 +61,8 @@ public class Pathfinding
             Debug.Log("Is diferent");
             openList.Remove(currentNode);
             closedList.Add(currentNode);
-            int count = 0;
             foreach (PathNode neighbourNode in GetNeighbourList(currentNode))
             {
-                count = count + 1;
-                Debug.Log("RevisandoVecino"+count);
                 if (closedList.Contains(neighbourNode))
                 {
                     Debug.Log("YalotieneVecino");
@@ -82,7 +78,7 @@ public class Pathfinding
 
                 int tentativegCost = currentNode.gCost + CalculateDistanceCost(currentNode, neighbourNode);
                 Debug.Log(tentativegCost+" - "+currentNode.gCost);
-                if (tentativegCost < currentNode.gCost)
+                if (tentativegCost < neighbourNode.gCost)
                 {
                     Debug.Log("Esta es la buena mijo");
                     neighbourNode.cameFromNode = currentNode;

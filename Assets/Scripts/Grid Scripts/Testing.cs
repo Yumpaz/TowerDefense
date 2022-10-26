@@ -184,43 +184,24 @@ public class Testing : MonoBehaviour
             #endregion
             #region Play
             case GameState.play:
-                print("Game Start");
-                GameObject currentUnit = IFTSUnits[0];
-                GameObject enemyUnit = TWSUnits[0];
-                List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
-                                                                   currentUnit.GetComponent<InfantrySmall>().GetY(),
-                                                                   enemyUnit.GetComponent<TowerSmall>().GetX(),
-                                                                   enemyUnit.GetComponent<TowerSmall>().GetY());
-                if (path != null)
-                {
-                    print(path.Count);
-                    for (int i = 0; i < path.Count - 1; i++)
-                    {
-                        print("Drawing Line");
-                        Debug.DrawLine(new Vector3(path[i].GetX(), path[i].GetY()) * 10f + Vector3.one * 5f,
-                                       new Vector3(path[i].GetX(), path[i].GetY()) * 10f + Vector3.one * 5f, Color.gray);
-                    }
-                }
-                /*foreach (GameObject currentUnit in IFTSUnits)
+                foreach (GameObject currentUnit in IFTSUnits)
                 {
                     foreach (GameObject enemyUnit in TWSUnits)
                     {
-                        print("Calculating path");
                         List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
                                                                    currentUnit.GetComponent<InfantrySmall>().GetY(),
                                                                    enemyUnit.GetComponent<TowerSmall>().GetX(),
                                                                    enemyUnit.GetComponent<TowerSmall>().GetY());
                         if (path != null)
                         {
-                            print("Drawing path");
                             for(int i = 0; i < path.Count - 1; i++)
                             {
-                                Debug.DrawLine(new Vector3(path[i].GetX(), path[i].GetY()) * 10f + Vector3.one * 5f,
-                                               new Vector3(path[i].GetX(), path[i].GetY()) * 10f + Vector3.one * 5f, Color.cyan);
+                                Debug.DrawLine(new Vector3(path[i].GetX(), path[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(path[i + 1].GetX(),
+                                               path[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.red, 5f);
                             }
                         }
                     }
-                }*/
+                }
                 break;
             #endregion
             #region End
