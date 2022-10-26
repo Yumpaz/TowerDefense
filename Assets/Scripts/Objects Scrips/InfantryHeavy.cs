@@ -14,7 +14,7 @@ public class InfantryHeavy : MonoBehaviour
         speed = 1;
         cost = 2;
         range = 2;
-        speed *= 5;
+        speed *= 7;
     }
 
     #region PositionFunctions

@@ -6,6 +6,8 @@ public class InfantrySmall : MonoBehaviour
 {
     private int life, attack, speed, cost, range, type, x, y, currentPathIndex;
     private List<Vector3> pathVectorList;
+    [SerializeField] private GameObject bullet, bulletInstance;
+    private BulletBehaviour bulletscript;
 
     void Start()
     {
@@ -14,7 +16,7 @@ public class InfantrySmall : MonoBehaviour
         speed = 2;
         cost = 1;
         range = 2;
-        speed *= 5;
+        speed *= 7;
     }
 
     #region PositionsFunctions
@@ -81,6 +83,26 @@ public class InfantrySmall : MonoBehaviour
     }
     #endregion
 
+    #region AttackFunctions
+
+    public void EnemyInRange(Vector3 myPosition, Vector3 targetVector)
+    {
+        if (myPosition == targetVector)
+        {
+            StopMoving();
+            StartShooting(targetVector);
+        }
+    }
+
+    #region StartShooting
+    private void StartShooting(Vector3 targetPosition)
+    {
+        bulletInstance = Instantiate(bullet, this.transform.position, Quaternion.identity);
+        bulletscript = bulletInstance.GetComponent<BulletBehaviour>();
+        bulletscript.Movement(targetPosition, this.transform.position);
+    }
+    #endregion
+    #endregion
     public void Delete(Grid<PathNode> grid)
     {
         grid.SetGridObject(x, y, new PathNode(grid, x, y, 2));
@@ -89,6 +111,6 @@ public class InfantrySmall : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+        
     }
 }

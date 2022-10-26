@@ -15,6 +15,7 @@ public class TowerSmall : MonoBehaviour
         range = 2;
     }
 
+    #region PositionFunctions
     public void UpdatePosition(int x, int y)
     {
         this.x = x;
@@ -30,7 +31,19 @@ public class TowerSmall : MonoBehaviour
     {
         return y;
     }
+    #endregion
 
+    #region AttackFunctions
+    public int GetAttack()
+    {
+        return this.attack;
+    }
+
+    public void ReceiveDamage(int Damage)
+    {
+        this.life -= Damage;
+    }
+    #endregion
     public void Delete(Grid<PathNode> grid)
     {
         grid.SetGridObject(x, y, new PathNode(grid, x, y, 2));

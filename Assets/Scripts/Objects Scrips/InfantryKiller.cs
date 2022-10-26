@@ -6,6 +6,7 @@ public class InfantryKiller : MonoBehaviour
 {
     private int life, attack, speed, cost, range, type, x, y, currentPathIndex;
     private List<Vector3> pathVectorList;
+    [SerializeField] private GameObject Bullet;
 
     void Start()
     {
@@ -14,7 +15,7 @@ public class InfantryKiller : MonoBehaviour
         speed = 2;
         cost = 3;
         range = 1;
-        speed *= 5;
+        speed *= 7;
     }
 
     #region PositionFunctions
