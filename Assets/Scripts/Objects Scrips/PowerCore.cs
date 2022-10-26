@@ -28,6 +28,12 @@ public class PowerCore : MonoBehaviour
         return y;
     }
 
+    public void Delete(Grid<PathNode> grid)
+    {
+        grid.SetGridObject(x, y, new PathNode(grid, x, y, 2));
+        Destroy(this.gameObject);
+    }
+
     private void Update()
     {
         

@@ -219,21 +219,18 @@ public class Testing : MonoBehaviour
                             }
                         }
                     }
-                    if (TWSUnits.Count < 1 && TWHUnits.Count < 1)
+                    foreach (GameObject enemyUnit in PWUnits)
                     {
-                        foreach (GameObject enemyUnit in PWUnits)
+                        List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
+                                                                   currentUnit.GetComponent<InfantrySmall>().GetY(),
+                                                                   enemyUnit.GetComponent<PowerCore>().GetX(),
+                                                                   enemyUnit.GetComponent<PowerCore>().GetY());
+                        if (path != null)
                         {
-                            List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
-                                                                       currentUnit.GetComponent<InfantrySmall>().GetY(),
-                                                                       enemyUnit.GetComponent<PowerCore>().GetX(),
-                                                                       enemyUnit.GetComponent<PowerCore>().GetY());
-                            if (path != null)
+                            if (pathfinding.GetPathCost() < minpathCost)
                             {
-                                if (pathfinding.GetPathCost() < minpathCost)
-                                {
-                                    minpathCost = pathfinding.GetPathCost();
-                                    minpath = path;
-                                }
+                                minpathCost = pathfinding.GetPathCost();
+                                minpath = path;
                             }
                         }
                     }
@@ -242,6 +239,7 @@ public class Testing : MonoBehaviour
                         Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
                                        minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.yellow, 5f);
                     }
+                    currentUnit.GetComponent<InfantrySmall>().SetTargetPosition(new Vector3(minpath[minpath.Count - 1].GetX(), minpath[minpath.Count - 1].GetY()) * 10f + Vector3.one * 5f);
                 }
                 #endregion
                 #region InfantryHeavy
@@ -278,21 +276,18 @@ public class Testing : MonoBehaviour
                             }
                         }
                     }
-                    if (TWSUnits.Count < 1 && TWHUnits.Count < 1)
+                    foreach (GameObject enemyUnit in PWUnits)
                     {
-                        foreach (GameObject enemyUnit in PWUnits)
+                        List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantryHeavy>().GetX(),
+                                                                   currentUnit.GetComponent<InfantryHeavy>().GetY(),
+                                                                   enemyUnit.GetComponent<PowerCore>().GetX(),
+                                                                   enemyUnit.GetComponent<PowerCore>().GetY());
+                        if (path != null)
                         {
-                            List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantryHeavy>().GetX(),
-                                                                       currentUnit.GetComponent<InfantryHeavy>().GetY(),
-                                                                       enemyUnit.GetComponent<PowerCore>().GetX(),
-                                                                       enemyUnit.GetComponent<PowerCore>().GetY());
-                            if (path != null)
+                            if (pathfinding.GetPathCost() < minpathCost)
                             {
-                                if (pathfinding.GetPathCost() < minpathCost)
-                                {
-                                    minpathCost = pathfinding.GetPathCost();
-                                    minpath = path;
-                                }
+                                minpathCost = pathfinding.GetPathCost();
+                                minpath = path;
                             }
                         }
                     }
@@ -301,6 +296,7 @@ public class Testing : MonoBehaviour
                         Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
                                        minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.blue, 5f);
                     }
+                    currentUnit.GetComponent<InfantryHeavy>().SetTargetPosition(new Vector3(minpath[minpath.Count - 1].GetX(), minpath[minpath.Count - 1].GetY()) * 10f + Vector3.one * 5f);
                 }
                 #endregion
                 #region InfantryKiller
@@ -325,14 +321,31 @@ public class Testing : MonoBehaviour
                     Debug.Log("Objetivo: " + minpath[minpath.Count - 1].GetX() + " " + minpath[minpath.Count - 1].GetY());
                     for (int i = 0; i < minpath.Count - 1; i++)
                     {
-                        Debug.Log("The path");                        
-                        Debug.Log(minpath[i].GetX() + " " + minpath[i].GetY());
                         Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
                                        minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.black, 5f);
-                        Debug.Log("Donef");
                     }
                 }
                 #endregion
+                if (Input.GetMouseButtonDown(0))
+                {
+                    pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
+                    foreach (GameObject unit in TWSUnits)
+                    {
+                        if(unit.GetComponent<TowerSmall>().GetX() == x && unit.GetComponent<TowerSmall>().GetY() == y)
+                        {
+                            TWSUnits.Remove(unit);
+                            unit.GetComponent<TowerSmall>().Delete(pathfinding.GetGrid());
+                        }
+                    }
+                    foreach (GameObject unit in TWHUnits)
+                    {
+                        if (unit.GetComponent<TowerHeavy>().GetX() == x && unit.GetComponent<TowerHeavy>().GetY() == y)
+                        {
+                            TWHUnits.Remove(unit);
+                            unit.GetComponent<TowerHeavy>().Delete(pathfinding.GetGrid());
+                        }
+                    }
+                }
                 break;
             #endregion
             #region End
@@ -348,11 +361,6 @@ public class Testing : MonoBehaviour
         prepare,
         play,
         end
-    }
-
-    public GameState GetGameState()
-    {
-        return _gameState;
     }
 
     public void UpdateGameState(GameState gameState)
