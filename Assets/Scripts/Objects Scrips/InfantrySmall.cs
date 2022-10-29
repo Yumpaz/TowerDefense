@@ -103,22 +103,14 @@ public class InfantrySmall : MonoBehaviour
             {
                 Debug.Log(node.GetValue());
                 canMove = false;
-                //StartAttacking();
+                StartAttacking();
             }
         }
     }
 
-    private void StartAttacking()
+    public void StartAttacking()
     {
-        foreach (PathNode node in NodesInRange)
-        {
-            if (node.GetValue() == 4)
-            {
-                Debug.Log(node.GetValue());
-                canMove = false;
-                //StartAttacking();
-            }
-        }
+        canMove = true;
     }
     #endregion
     public void Delete(Grid<PathNode> grid)
