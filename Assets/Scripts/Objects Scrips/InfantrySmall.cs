@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class InfantrySmall : MonoBehaviour
 {
-    private int life, attack, speed, cost, range, type, x, y, currentPathIndex;
+    private int life, attack, speed, cost, range, type, x, startx, y, starty, currentPathIndex;
     private List<Vector3> pathVectorList;
     [SerializeField] private GameObject bullet, bulletInstance;
-    private BulletBehaviour bulletscript;
     private List<PathNode> NodesInRange;
-    private bool canMove = true;
+    private bool canMove = true, canShoot = true;
 
     void Start()
     {
@@ -18,7 +17,7 @@ public class InfantrySmall : MonoBehaviour
         speed = 2;
         cost = 1;
         range = 2;
-        speed *= 7;
+        speed *= 10;
     }
 
     #region PositionsFunctions
@@ -26,6 +25,8 @@ public class InfantrySmall : MonoBehaviour
     {
         this.x = x;
         this.y = y;
+        startx = x;
+        starty = y;
     }
 
     public int GetX()
@@ -36,6 +37,16 @@ public class InfantrySmall : MonoBehaviour
     public int GetY()
     {
         return y;
+    }
+
+    public int GetStartX()
+    {
+        return startx;
+    }
+
+    public int GetStartY()
+    {
+        return starty;
     }
     #endregion
 
@@ -89,38 +100,106 @@ public class InfantrySmall : MonoBehaviour
     private void GetCurrentNode()
     {
         PathNode currentNode = Pathfinding.Instance.GetGrid().GetGridObject(GetPosition());
-        Debug.Log("Current Node: " + currentNode.GetX() + " " + currentNode.GetY());
+        if (currentNode.GetX() != x || currentNode.GetY() != y)
+        {
+            if (Pathfinding.Instance.GetGrid().GetGridObject(x, y).GetValue() != 3)
+            {
+                Pathfinding.Instance.GetGrid().SetGridObject(x, y, new PathNode(Pathfinding.Instance.GetGrid(), x, y, 0));
+            }
+        }
+        if (Pathfinding.Instance.GetGrid().GetGridObject(x, y).GetValue() != 3)
+        {
+            x = currentNode.GetX();
+            y = currentNode.GetY();
+            Pathfinding.Instance.GetGrid().SetGridObject(x, y, new PathNode(Pathfinding.Instance.GetGrid(), x, y, -1));
+        }
         NodesInRange = Pathfinding.Instance.GetNodesInRange(currentNode, range);
         StartShooting();
-
     }
 
     private void StartShooting()
     {
         foreach (PathNode node in NodesInRange)
         {
-            if (node.GetValue() == 4)
+            if (node != null && (node.GetValue() == 4 || node.GetValue() == 5) && canShoot == true)
             {
                 Debug.Log(node.GetValue());
                 canMove = false;
-                StartAttacking();
+                canShoot = false;
+                StartAttacking(node);
             }
         }
     }
 
-    public void StartAttacking()
+    public void StartAttacking(PathNode node)
     {
-        canMove = true;
+        bulletInstance = Instantiate(bullet, Pathfinding.Instance.GetGrid().GetWorldPosition(x, y) + new Vector3(Pathfinding.Instance.GetGrid().GetCellSize(),
+                                     Pathfinding.Instance.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+        Vector3 shootDir = (Pathfinding.Instance.GetGrid().GetWorldPosition(node.GetX(), node.GetY()) - Pathfinding.Instance.GetGrid().GetWorldPosition(x, y)).normalized;
+        bulletInstance.GetComponent<BulletBehaviour>().Setup(shootDir, attack);
+        StartCoroutine(SpawnBulletTimer());
+    }
+
+    private bool CheckEnemies()
+    {
+        bool result = false;
+        foreach (PathNode node in NodesInRange)
+        {
+            if (node.GetValue() == 4 || node.GetValue() == 5)
+            {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    public IEnumerator SpawnBulletTimer()
+    {
+        yield return new WaitForSeconds(3f);
+        canShoot = true;
+        if (!CheckEnemies())
+        {
+            canMove = true;
+        }
+    }
+    #endregion
+
+    #region DamageFunctions
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "EnemyBullet")
+        {
+            Debug.Log("ReceiveDamage");
+            int damage = collision.gameObject.GetComponent<BulletBehaviour>().GetDamage();
+            LoseHealth(damage);
+            Destroy(collision.gameObject);
+        }
+    }
+
+    public void LoseHealth(int damage)
+    {
+        life -= damage;
     }
     #endregion
     public void Delete(Grid<PathNode> grid)
     {
-        grid.SetGridObject(x, y, new PathNode(grid, x, y, 2));
+        grid.SetGridObject(x, y, new PathNode(grid, x, y, 0));
+        Testing.Instance.IFTSUnits.Remove(this.gameObject);
+        Destroy(this.gameObject);
+    }
+
+    public void Erase(Grid<PathNode> grid)
+    {
+        grid.SetGridObject(x, y, new PathNode(grid, x, y, 0));
         Destroy(this.gameObject);
     }
 
     private void FixedUpdate()
     {
         GetCurrentNode();
+        if (life <= 0)
+        {
+            Delete(Pathfinding.Instance.GetGrid());
+        }
     }
 }

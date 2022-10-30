@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletBehaviour : MonoBehaviour
+public class EnemyBulletBehaviour : MonoBehaviour
 {
     private Vector3 shootDir;
     private int damage;
@@ -15,7 +15,7 @@ public class BulletBehaviour : MonoBehaviour
 
     private void Update()
     {
-        float moveSpeed = 30f;
+        float moveSpeed = 15f;
         transform.position += shootDir * moveSpeed * Time.deltaTime;
     }
 
