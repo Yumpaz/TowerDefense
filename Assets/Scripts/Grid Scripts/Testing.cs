@@ -7,14 +7,14 @@ public class Testing : MonoBehaviour
 {
 
     [SerializeField] private GameObject Object1, Object2, pcInstance, iftsInstance, ifthInstance, iftkInstance, twhInstance, twsInstance, wallInstance;
-    [SerializeField] private TextMeshProUGUI tcredits, tecredits;
+    private TextMeshProUGUI tcredits, tecredits;
     private bool SelectionActive = false;
     private Pathfinding pathfinding;
     List<PathNode> minpath;
     List<PathNode> minpathkiller;
-    private int type = 3, credits, cost, enemycredits, enemycost, random, randomx, randomy, minpathCost, minpathKillerCost, x, y, starting;
-    private GameState _gameState = GameState.prepare;
-    private string resultados;
+    private int type = 3, credits, cost, enemycredits, enemycost, random, randomx, randomy, minpathCost, minpathKillerCost, x, y;
+    public int starting;
+    public string resultados;
     #region Lists
     public List<GameObject> PWUnits = new List<GameObject>();
     public List<GameObject> TWHUnits = new List<GameObject>();
@@ -35,16 +35,17 @@ public class Testing : MonoBehaviour
 
     void Start()
     {
-        starting = 0;
         Instance = this;
+        tcredits = GameManager.Instance.tcredits;
+        tecredits = GameManager.Instance.tecredits;
     }
 
     private void Update()
     {
-        switch (_gameState)
+        switch (GameManager.Instance._gameState)
         {
             #region Prepare
-            case GameState.prepare:
+            case GameManager.GameState.prepare:
                 if (starting == 0)
                 {
                     resultados = "";
@@ -196,6 +197,7 @@ public class Testing : MonoBehaviour
                     GetPositions();
                     starting = 1;
                 }
+                GameManager.Instance.UpdateGameState(GameManager.GameState.play);
                 #region PlayerPrepare
                 tcredits.text = "Credits: " + credits;
                 if (Input.GetMouseButtonDown(0) && SelectionActive == true)
@@ -257,7 +259,7 @@ public class Testing : MonoBehaviour
                 break;
             #endregion
             #region Play
-            case GameState.play:
+            case GameManager.GameState.play:
                 #region InfantrySmall
                 foreach (GameObject currentUnit in IFTSUnits)
                 {
@@ -489,17 +491,17 @@ public class Testing : MonoBehaviour
                 }
                 if(PWUnits.Count < 1)
                 {
-                    UpdateGameState(GameState.end);
+                    GameManager.Instance.UpdateGameState(GameManager.GameState.end);
                 }
                 #endregion
                 if (PWUnits.Count == 0 || (IFTSUnits.Count == 0 && IFTHUnits.Count == 0 && IFTKUnits.Count == 0) || (IFTSUnits.Count == 0 && IFTHUnits.Count == 0 && CheckKillers()))
                 {
-                    UpdateGameState(GameState.end);
+                    GameManager.Instance.UpdateGameState(GameManager.GameState.end);
                 }
                 break;
             #endregion
             #region End
-            case GameState.end:
+            case GameManager.GameState.end:
                 if (PWUnits.Count == 0)
                 {
                     resultados += "Win";
@@ -515,86 +517,124 @@ public class Testing : MonoBehaviour
         }
     }
 
-    public enum GameState
-    {
-        prepare,
-        play,
-        end
-    }
-
-    public void UpdateGameState(GameState gameState)
-    {
-        _gameState = gameState;
-    }
-
-
     public void GetPositions()
     {
         //PLAYER X
+        int contador = 0;
         foreach (GameObject unit in IFTSUnits)
         {
             resultados += unit.GetComponent<InfantrySmall>().GetX()+",";
+            contador += 1;
         }
         foreach (GameObject unit in IFTHUnits)
         {
             resultados += unit.GetComponent<InfantryHeavy>().GetX() + ",";
+            contador += 1;
         }
         foreach (GameObject unit in IFTKUnits)
         {
             resultados += unit.GetComponent<InfantryKiller>().GetX() + ",";
+            contador += 1;
+        }
+        while (contador < 15)
+        {
+            resultados += "NULL,";
+            contador += 1;
         }
         //PLAYER Y
+        contador = 0;
         foreach (GameObject unit in IFTSUnits)
         {
             resultados += unit.GetComponent<InfantrySmall>().GetY() + ",";
+            contador += 1;
         }
         foreach (GameObject unit in IFTHUnits)
         {
             resultados += unit.GetComponent<InfantryHeavy>().GetY() + ",";
+            contador += 1;
         }
         foreach (GameObject unit in IFTKUnits)
         {
             resultados += unit.GetComponent<InfantryKiller>().GetY() + ",";
+            contador += 1;
+        }
+        while (contador < 15)
+        {
+            resultados += "NULL,";
+            contador += 1;
         }
         //PLAYER TYPE
+        contador = 0;
         foreach (GameObject unit in IFTSUnits)
         {
             resultados += unit.GetComponent<InfantrySmall>().GetUnitType() + ",";
+            contador += 1;
         }
         foreach (GameObject unit in IFTHUnits)
         {
             resultados += unit.GetComponent<InfantryHeavy>().GetUnitType() + ",";
+            contador += 1;
         }
         foreach (GameObject unit in IFTKUnits)
         {
             resultados += unit.GetComponent<InfantryKiller>().GetUnitType() + ",";
+            contador += 1;
+        }
+        while (contador < 15)
+        {
+            resultados += "NULL,";
+            contador += 1;
         }
         //ENEMY X
+        contador = 0;
         foreach (GameObject unit in TWSUnits)
         {
             resultados += unit.GetComponent<TowerSmall>().GetX() + ",";
+            contador += 1;
         }
         foreach (GameObject unit in TWHUnits)
         {
             resultados += unit.GetComponent<TowerHeavy>().GetX() + ",";
+            contador += 1;
+        }
+        while (contador < 7)
+        {
+            resultados += "NULL,";
+            contador += 1;
         }
         //ENEMY Y
+        contador = 0;
         foreach (GameObject unit in TWSUnits)
         {
             resultados += unit.GetComponent<TowerSmall>().GetY() + ",";
+            contador += 1;
         }
         foreach (GameObject unit in TWHUnits)
         {
             resultados += unit.GetComponent<TowerHeavy>().GetY() + ",";
+            contador += 1;
+        }
+        while (contador < 7)
+        {
+            resultados += "NULL,";
+            contador += 1;
         }
         //ENEMY TYPE
+        contador = 0;
         foreach (GameObject unit in TWSUnits)
         {
             resultados += unit.GetComponent<TowerSmall>().GetUnitType() + ",";
+            contador += 1;
         }
         foreach (GameObject unit in TWHUnits)
         {
             resultados += unit.GetComponent<TowerHeavy>().GetUnitType() + ",";
+            contador += 1;
+        }
+        while (contador < 7)
+        {
+            resultados += "NULL,";
+            contador += 1;
         }
     }
     #region Utils
@@ -643,7 +683,7 @@ public class Testing : MonoBehaviour
 
     public void StartGame()
     {
-        UpdateGameState(GameState.play);
+        GameManager.Instance.UpdateGameState(GameManager.GameState.play);
     }
 
     public void ReStartGame()
@@ -682,7 +722,7 @@ public class Testing : MonoBehaviour
         TWHUnits.Clear();
         #endregion
         starting = 0;
-        UpdateGameState(GameState.prepare);
+        GameManager.Instance.UpdateGameState(GameManager.GameState.prepare);
     }
 
     public IEnumerator WaitTimer()

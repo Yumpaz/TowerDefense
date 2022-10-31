@@ -40,7 +40,6 @@ public class PowerCore : MonoBehaviour
     {
         if (collision.tag == "Bullet")
         {
-            Debug.Log("ReceiveDamage");
             int damage = collision.gameObject.GetComponent<BulletBehaviour>().GetDamage();
             LoseHealth(damage);
             Destroy(collision.gameObject);

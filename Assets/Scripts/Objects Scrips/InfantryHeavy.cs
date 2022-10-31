@@ -129,7 +129,6 @@ public class InfantryHeavy : MonoBehaviour
         {
             if (node != null && (node.GetValue() == 4 || node.GetValue() == 5) && canShoot == true)
             {
-                Debug.Log(node.GetValue());
                 canMove = false;
                 canShoot = false;
                 StartAttacking(node);
@@ -175,7 +174,6 @@ public class InfantryHeavy : MonoBehaviour
     {
         if (collision.tag == "EnemyBullet")
         {
-            Debug.Log("ReceiveDamage");
             int damage = collision.gameObject.GetComponent<BulletBehaviour>().GetDamage();
             LoseHealth(damage);
             Destroy(collision.gameObject);

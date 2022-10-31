@@ -61,7 +61,6 @@ public class TowerSmall : MonoBehaviour
         {
             if (node != null && node.GetValue() == -1 && canShoot == true)
             {
-                Debug.Log(node.GetValue());
                 canShoot = false;
                 StartAttacking(node);
             }
@@ -89,7 +88,6 @@ public class TowerSmall : MonoBehaviour
     {
         if (collision.tag == "Bullet")
         {
-            Debug.Log("ReceiveDamage");
             int damage = collision.gameObject.GetComponent<BulletBehaviour>().GetDamage();
             LoseHealth(damage);
             Destroy(collision.gameObject);
