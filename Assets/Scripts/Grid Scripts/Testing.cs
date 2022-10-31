@@ -14,6 +14,7 @@ public class Testing : MonoBehaviour
     List<PathNode> minpathkiller;
     private int type = 3, credits, cost, enemycredits, enemycost, random, randomx, randomy, minpathCost, minpathKillerCost, x, y, starting;
     private GameState _gameState = GameState.prepare;
+    private string resultados;
     #region Lists
     public List<GameObject> PWUnits = new List<GameObject>();
     public List<GameObject> TWHUnits = new List<GameObject>();
@@ -46,6 +47,7 @@ public class Testing : MonoBehaviour
             case GameState.prepare:
                 if (starting == 0)
                 {
+                    resultados = "";
                     credits = 15;
                     enemycredits = 15;
                     #region BuildingGrid
@@ -191,6 +193,7 @@ public class Testing : MonoBehaviour
                         cost = 1;
                     }
                     #endregion
+                    GetPositions();
                     starting = 1;
                 }
                 #region PlayerPrepare
@@ -499,34 +502,17 @@ public class Testing : MonoBehaviour
             case GameState.end:
                 if (PWUnits.Count == 0)
                 {
-                    Debug.Log("Win");
+                    resultados += "Win";
                 }
                 else
                 {
-                    Debug.Log("Lose");
+                    resultados += "Lose";
                 }
+                Debug.Log(resultados);
+                ReStartGame();
                 break;
             #endregion
         }
-    }
-
-    private bool CheckKillers()
-    {
-        if (IFTKUnits.Count > 0)
-        {
-            foreach (GameObject node in IFTKUnits)
-            {
-                if (node.GetComponent<InfantryKiller>().GetStartX() == node.GetComponent<InfantryKiller>().GetX() || node.GetComponent<InfantryKiller>().GetStartY() == node.GetComponent<InfantryKiller>().GetY())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-        return false;
     }
 
     public enum GameState
@@ -541,6 +527,76 @@ public class Testing : MonoBehaviour
         _gameState = gameState;
     }
 
+
+    public void GetPositions()
+    {
+        //PLAYER X
+        foreach (GameObject unit in IFTSUnits)
+        {
+            resultados += unit.GetComponent<InfantrySmall>().GetX()+",";
+        }
+        foreach (GameObject unit in IFTHUnits)
+        {
+            resultados += unit.GetComponent<InfantryHeavy>().GetX() + ",";
+        }
+        foreach (GameObject unit in IFTKUnits)
+        {
+            resultados += unit.GetComponent<InfantryKiller>().GetX() + ",";
+        }
+        //PLAYER Y
+        foreach (GameObject unit in IFTSUnits)
+        {
+            resultados += unit.GetComponent<InfantrySmall>().GetY() + ",";
+        }
+        foreach (GameObject unit in IFTHUnits)
+        {
+            resultados += unit.GetComponent<InfantryHeavy>().GetY() + ",";
+        }
+        foreach (GameObject unit in IFTKUnits)
+        {
+            resultados += unit.GetComponent<InfantryKiller>().GetY() + ",";
+        }
+        //PLAYER TYPE
+        foreach (GameObject unit in IFTSUnits)
+        {
+            resultados += unit.GetComponent<InfantrySmall>().GetUnitType() + ",";
+        }
+        foreach (GameObject unit in IFTHUnits)
+        {
+            resultados += unit.GetComponent<InfantryHeavy>().GetUnitType() + ",";
+        }
+        foreach (GameObject unit in IFTKUnits)
+        {
+            resultados += unit.GetComponent<InfantryKiller>().GetUnitType() + ",";
+        }
+        //ENEMY X
+        foreach (GameObject unit in TWSUnits)
+        {
+            resultados += unit.GetComponent<TowerSmall>().GetX() + ",";
+        }
+        foreach (GameObject unit in TWHUnits)
+        {
+            resultados += unit.GetComponent<TowerHeavy>().GetX() + ",";
+        }
+        //ENEMY Y
+        foreach (GameObject unit in TWSUnits)
+        {
+            resultados += unit.GetComponent<TowerSmall>().GetY() + ",";
+        }
+        foreach (GameObject unit in TWHUnits)
+        {
+            resultados += unit.GetComponent<TowerHeavy>().GetY() + ",";
+        }
+        //ENEMY TYPE
+        foreach (GameObject unit in TWSUnits)
+        {
+            resultados += unit.GetComponent<TowerSmall>().GetUnitType() + ",";
+        }
+        foreach (GameObject unit in TWHUnits)
+        {
+            resultados += unit.GetComponent<TowerHeavy>().GetUnitType() + ",";
+        }
+    }
     #region Utils
     public static Vector3 GetMouseWorldPosition()
     {
@@ -632,6 +688,25 @@ public class Testing : MonoBehaviour
     public IEnumerator WaitTimer()
     {
         yield return new WaitForSeconds(0.5f);
+    }
+
+    private bool CheckKillers()
+    {
+        if (IFTKUnits.Count > 0)
+        {
+            foreach (GameObject node in IFTKUnits)
+            {
+                if (node.GetComponent<InfantryKiller>().GetStartX() == node.GetComponent<InfantryKiller>().GetX() || node.GetComponent<InfantryKiller>().GetStartY() == node.GetComponent<InfantryKiller>().GetY())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
     #endregion
 }

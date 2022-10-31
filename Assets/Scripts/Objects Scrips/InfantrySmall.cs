@@ -18,6 +18,12 @@ public class InfantrySmall : MonoBehaviour
         cost = 1;
         range = 2;
         speed *= 10;
+        type = 0;
+    }
+
+    public int GetUnitType()
+    {
+        return type;
     }
 
     #region PositionsFunctions

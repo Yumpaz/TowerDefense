@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class PowerCore : MonoBehaviour
 {
-    private int life, cost, x, y;
+    private int life, x, y, type;
 
     private void Awake()
     {
         life = 14;
-        cost = 0;
+        type = 5;
+    }
+
+    public int GetUnitType()
+    {
+        return type;
     }
 
     #region PositionFunctions

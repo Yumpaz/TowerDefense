@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InfantryKiller : MonoBehaviour
 {
-    private int life, attack, speed, cost, range, type, x, startx, y, starty, currentPathIndex;
+    private int life, attack, speed, cost, range, type = 2, x, startx, y, starty, currentPathIndex;
     private List<Vector3> pathVectorList;
     [SerializeField] private GameObject bullet, bulletInstance;
     private List<PathNode> NodesInRange;
@@ -18,6 +18,12 @@ public class InfantryKiller : MonoBehaviour
         cost = 3;
         range = 1;
         speed *= 10;
+        type = 2;
+    }
+
+    public int GetUnitType()
+    {
+        return type;
     }
 
     #region PositionFunctions

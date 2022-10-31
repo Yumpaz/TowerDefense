@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TowerSmall : MonoBehaviour
 {
-    private int life, attack, speed, cost, range, type, x, y;
+    private int life, attack, speed, cost, range, type = 3, x, y;
     [SerializeField] private GameObject bullet, bulletInstance;
     private List<PathNode> NodesInRange;
     private bool canShoot = true;
@@ -16,6 +16,12 @@ public class TowerSmall : MonoBehaviour
         speed = 0;
         cost = 2;
         range = 3;
+        type = 3;
+    }
+
+    public int GetUnitType()
+    {
+        return type;
     }
 
     #region PositionFunctions

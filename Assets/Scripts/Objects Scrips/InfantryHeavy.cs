@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InfantryHeavy : MonoBehaviour
 {
-    private int life, attack, speed, cost, range, type, x,  startx, y, starty, currentPathIndex;
+    private int life, attack, speed, cost, range, type = 1, x,  startx, y, starty, currentPathIndex;
     private List<Vector3> pathVectorList;
     [SerializeField] private GameObject bullet, bulletInstance;
     private List<PathNode> NodesInRange;
@@ -18,6 +18,12 @@ public class InfantryHeavy : MonoBehaviour
         cost = 2;
         range = 2;
         speed *= 10;
+        type = 1;
+    }
+
+    public int GetUnitType()
+    {
+        return type;
     }
 
     #region PositionsFunctions

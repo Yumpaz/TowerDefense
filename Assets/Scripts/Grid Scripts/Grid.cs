@@ -20,7 +20,7 @@ public class Grid<GridObject>
     private float cellSize;
     private GridObject[,] gridArray;
     private bool showDebug;
-    private bool _Debug = false;
+    private bool _Debug = true;
     private TextMesh[,] debugTextArray;//Debug
 
     public Grid(int width, int height, float cellSize, Func<Grid<GridObject>, int, int, GridObject> createGridObject)

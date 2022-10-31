@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TowerHeavy : MonoBehaviour
 {
-    private int life, attack, speed, cost, range, type, x, y;
+    private int life, attack, speed, cost, range, type = 4, x, y;
     private List<Vector3> pathVectorList;
     [SerializeField] private GameObject bullet, bulletInstance;
     private List<PathNode> NodesInRange;
@@ -17,6 +17,12 @@ public class TowerHeavy : MonoBehaviour
         speed = 0;
         cost = 3;
         range = 3;
+        type = 4;
+    }
+
+    public int GetUnitType()
+    {
+        return type;
     }
 
     #region PositionFunctions
