@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +17,8 @@ public class GameManager : MonoBehaviour
         Instance = this;
         UpdateGameState(GameState.simulationwait);
         Instantiate(TestingObject);
+        Directory.CreateDirectory(Application.streamingAssetsPath + "/Output/");
+        CreateTextFile();
     }
 
     void Update()
@@ -64,5 +67,22 @@ public class GameManager : MonoBehaviour
         running = false;
         Testing.Instance.changeenemies = 0;
         UpdateGameState(GameState.simulationend);
+    }
+
+    public void CreateTextFile()
+    {
+        string txtDocName = Application.streamingAssetsPath + "/Output/" + "Positions" + ".txt";
+
+        if (!File.Exists(txtDocName))
+        {
+            File.WriteAllText(txtDocName, "");
+        }
+    }
+
+    public void AddTextToFile(string text)
+    {
+        string txtDocName = Application.streamingAssetsPath + "/Output/" + "Positions" + ".txt";
+
+        File.AppendAllText(txtDocName, text + "\n");
     }
 }

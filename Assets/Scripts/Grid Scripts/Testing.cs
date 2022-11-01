@@ -129,7 +129,11 @@ public class Testing : MonoBehaviour
                         }
                     }
                     if (changeenemies == 0)
-                    { 
+                    {
+                        TWSUnitsX.Clear();
+                        TWHUnitsX.Clear();
+                        TWSUnitsY.Clear();
+                        TWHUnitsY.Clear();
                         #region EnemyPrepare
                         while (enemycredits - enemycost >= 0)
                         {
@@ -561,6 +565,7 @@ public class Testing : MonoBehaviour
                     resultados += "Lose";
                 }
                 Debug.Log(resultados);
+                GameManager.Instance.AddTextToFile(resultados);
                 ReStartGame();
                 break;
             #endregion
@@ -770,13 +775,6 @@ public class Testing : MonoBehaviour
             gObject.GetComponent<TowerHeavy>().Erase(pathfinding.GetGrid());
         }
         TWHUnits.Clear();
-        if (changeenemies == 0)
-        {
-            TWSUnitsX.Clear();
-            TWHUnitsX.Clear();
-            TWSUnitsY.Clear();
-            TWHUnitsY.Clear();
-        }
         #endregion
         starting = 0;
         GameManager.Instance.UpdateGameState(GameManager.GameState.prepare);
