@@ -17,7 +17,7 @@ public class InfantryHeavy : MonoBehaviour
         speed = 1;
         cost = 2;
         range = 2;
-        speed *= 25;
+        speed *= 35;
         type = 1;
     }
 

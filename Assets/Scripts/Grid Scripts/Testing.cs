@@ -372,10 +372,13 @@ public class Testing : MonoBehaviour
                             }
                         }
                     }
-                    for (int i = 0; i < minpath.Count - 1; i++)
+                    if (pathfinding.GetGrid()._Debug)
                     {
-                        Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
-                                       minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.yellow, 5f);
+                        for (int i = 0; i < minpath.Count - 1; i++)
+                        {
+                            Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
+                                           minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.yellow, 5f);
+                        }
                     }
                     currentUnit.GetComponent<InfantrySmall>().SetTargetPosition(new Vector3(minpath[minpath.Count - 1].GetX(), minpath[minpath.Count - 1].GetY()) * 10f + Vector3.one * 5f);
                 }
@@ -438,10 +441,13 @@ public class Testing : MonoBehaviour
                             }
                         }
                     }
-                    for (int i = 0; i < minpath.Count - 1; i++)
+                    if (pathfinding.GetGrid()._Debug)
                     {
-                        Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
-                                       minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.blue, 5f);
+                        for (int i = 0; i < minpath.Count - 1; i++)
+                        {
+                            Debug.DrawLine(new Vector3(minpath[i].GetX(), minpath[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpath[i + 1].GetX(),
+                                           minpath[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.blue, 5f);
+                        }
                     }
                     currentUnit.GetComponent<InfantryHeavy>().SetTargetPosition(new Vector3(minpath[minpath.Count - 1].GetX(), minpath[minpath.Count - 1].GetY()) * 10f + Vector3.one * 5f);
                 }
@@ -513,10 +519,13 @@ public class Testing : MonoBehaviour
                     #endregion
                     if(minpathkiller != null)
                     {
-                        for (int i = 0; i < minpathkiller.Count - 1; i++)
+                        if (pathfinding.GetGrid()._Debug)
                         {
-                            Debug.DrawLine(new Vector3(minpathkiller[i].GetX(), minpathkiller[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpathkiller[i + 1].GetX(),
-                                           minpathkiller[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.black, 5f);
+                            for (int i = 0; i < minpathkiller.Count - 1; i++)
+                            {
+                                Debug.DrawLine(new Vector3(minpathkiller[i].GetX(), minpathkiller[i].GetY()) * 10f + Vector3.one * 5f, new Vector3(minpathkiller[i + 1].GetX(),
+                                               minpathkiller[i + 1].GetY()) * 10f + Vector3.one * 5f, Color.black, 5f);
+                            }
                         }
                         currentUnit.GetComponent<InfantryKiller>().SetTargetPosition(new Vector3(minpathkiller[minpathkiller.Count - 1].GetX(), minpathkiller[minpathkiller.Count - 1].GetY()) * 10f + Vector3.one * 5f);
                     }
@@ -572,13 +581,149 @@ public class Testing : MonoBehaviour
         }
     }
 
+    #region Utils
+    public static Vector3 GetMouseWorldPosition()
+    {
+        Vector3 vec = GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
+        vec.z = 0f;
+        return vec;
+    }
+    public static Vector3 GetMouseWorldPositionWithZ()
+    {
+        return GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
+    }
+    public static Vector3 GetMouseWorldPositionWithZ(Camera worldCamera)
+    {
+        return GetMouseWorldPositionWithZ(Input.mousePosition, worldCamera);
+    }
+    public static Vector3 GetMouseWorldPositionWithZ(Vector3 screenPosition, Camera worldCamera)
+    {
+        Vector3 worldPosition = worldCamera.ScreenToWorldPoint(screenPosition);
+        return worldPosition;
+    }
+
+    public void SetType0()
+    {
+        type = 0;
+        SelectionState(true);
+    }
+
+    public void SetType1()
+    {
+        type = 1;
+        SelectionState(true);
+    }
+
+    public void SetType2()
+    {
+        type = 2;
+        SelectionState(true);
+    }
+
+    public void SelectionState(bool State)
+    {
+        SelectionActive = State;
+    }
+
+    public void StartGame()
+    {
+        GameManager.Instance.UpdateGameState(GameManager.GameState.play);
+    }
+
+    public void ReStartGame()
+    {
+        Debug.Log("Restarting");
+        #region DESTRUCTION
+        foreach (GameObject gObject in PWUnits)
+        {
+            gObject.GetComponent<PowerCore>().Erase(pathfinding.GetGrid());
+        }
+        PWUnits.Clear();
+        foreach (GameObject gObject in IFTSUnits)
+        {
+            gObject.GetComponent<InfantrySmall>().Erase(pathfinding.GetGrid());
+        }
+        IFTSUnits.Clear();
+        foreach (GameObject gObject in IFTHUnits)
+        {
+            gObject.GetComponent<InfantryHeavy>().Erase(pathfinding.GetGrid());
+        }
+        IFTHUnits.Clear();
+        foreach (GameObject gObject in IFTKUnits)
+        {
+            gObject.GetComponent<InfantryKiller>().Erase(pathfinding.GetGrid());
+        }
+        IFTKUnits.Clear();
+        foreach (GameObject gObject in TWSUnits)
+        {
+            gObject.GetComponent<TowerSmall>().Erase(pathfinding.GetGrid());
+        }
+        TWSUnits.Clear();
+        foreach (GameObject gObject in TWHUnits)
+        {
+            gObject.GetComponent<TowerHeavy>().Erase(pathfinding.GetGrid());
+        }
+        TWHUnits.Clear();
+        GameObject[] bullets;
+
+        bullets = GameObject.FindGameObjectsWithTag("Bullet");
+
+        foreach (GameObject bullet in bullets)
+        {
+            Destroy(bullet);
+        }
+        GameObject[] ebullets;
+
+        ebullets = GameObject.FindGameObjectsWithTag("EnemyBullet");
+
+        foreach (GameObject ebullet in ebullets)
+        {
+            Destroy(ebullet);
+        }
+        GameObject[] walls;
+
+        walls = GameObject.FindGameObjectsWithTag("Wall");
+
+        foreach (GameObject wall in walls)
+        {
+            Destroy(wall);
+        }
+        #endregion
+        starting = 0;
+        GameManager.Instance.UpdateGameState(GameManager.GameState.prepare);
+    }
+
+    public IEnumerator WaitTimer()
+    {
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    private bool CheckKillers()
+    {
+        if (IFTKUnits.Count > 0)
+        {
+            foreach (GameObject node in IFTKUnits)
+            {
+                if (node.GetComponent<InfantryKiller>().GetStartX() == node.GetComponent<InfantryKiller>().GetX() || node.GetComponent<InfantryKiller>().GetStartY() == node.GetComponent<InfantryKiller>().GetY())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
     public void GetPositions()
     {
         //PLAYER X
         int contador = 0;
         foreach (GameObject unit in IFTSUnits)
         {
-            resultados += unit.GetComponent<InfantrySmall>().GetX()+",";
+            resultados += unit.GetComponent<InfantrySmall>().GetX() + ",";
             contador += 1;
         }
         foreach (GameObject unit in IFTHUnits)
@@ -691,117 +836,6 @@ public class Testing : MonoBehaviour
             resultados += "NULL,";
             contador += 1;
         }
-    }
-    #region Utils
-    public static Vector3 GetMouseWorldPosition()
-    {
-        Vector3 vec = GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
-        vec.z = 0f;
-        return vec;
-    }
-    public static Vector3 GetMouseWorldPositionWithZ()
-    {
-        return GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
-    }
-    public static Vector3 GetMouseWorldPositionWithZ(Camera worldCamera)
-    {
-        return GetMouseWorldPositionWithZ(Input.mousePosition, worldCamera);
-    }
-    public static Vector3 GetMouseWorldPositionWithZ(Vector3 screenPosition, Camera worldCamera)
-    {
-        Vector3 worldPosition = worldCamera.ScreenToWorldPoint(screenPosition);
-        return worldPosition;
-    }
-
-    public void SetType0()
-    {
-        type = 0;
-        SelectionState(true);
-    }
-
-    public void SetType1()
-    {
-        type = 1;
-        SelectionState(true);
-    }
-
-    public void SetType2()
-    {
-        type = 2;
-        SelectionState(true);
-    }
-
-    public void SelectionState(bool State)
-    {
-        SelectionActive = State;
-    }
-
-    public void StartGame()
-    {
-        GameManager.Instance.UpdateGameState(GameManager.GameState.play);
-    }
-
-    public void ReStartGame()
-    {
-        Debug.Log("Restarting");
-        #region DESTRUCTION
-        foreach (GameObject gObject in PWUnits)
-        {
-            gObject.GetComponent<PowerCore>().Erase(pathfinding.GetGrid());
-        }
-        PWUnits.Clear();
-        foreach (GameObject gObject in IFTSUnits)
-        {
-            gObject.GetComponent<InfantrySmall>().Erase(pathfinding.GetGrid());
-        }
-        IFTSUnits.Clear();
-        foreach (GameObject gObject in IFTHUnits)
-        {
-            gObject.GetComponent<InfantryHeavy>().Erase(pathfinding.GetGrid());
-        }
-        IFTHUnits.Clear();
-        foreach (GameObject gObject in IFTKUnits)
-        {
-            gObject.GetComponent<InfantryKiller>().Erase(pathfinding.GetGrid());
-        }
-        IFTKUnits.Clear();
-        foreach (GameObject gObject in TWSUnits)
-        {
-            gObject.GetComponent<TowerSmall>().Erase(pathfinding.GetGrid());
-        }
-        TWSUnits.Clear();
-        foreach (GameObject gObject in TWHUnits)
-        {
-            gObject.GetComponent<TowerHeavy>().Erase(pathfinding.GetGrid());
-        }
-        TWHUnits.Clear();
-        #endregion
-        starting = 0;
-        GameManager.Instance.UpdateGameState(GameManager.GameState.prepare);
-    }
-
-    public IEnumerator WaitTimer()
-    {
-        yield return new WaitForSeconds(0.5f);
-    }
-
-    private bool CheckKillers()
-    {
-        if (IFTKUnits.Count > 0)
-        {
-            foreach (GameObject node in IFTKUnits)
-            {
-                if (node.GetComponent<InfantryKiller>().GetStartX() == node.GetComponent<InfantryKiller>().GetX() || node.GetComponent<InfantryKiller>().GetStartY() == node.GetComponent<InfantryKiller>().GetY())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-        return false;
     }
     #endregion
 }
