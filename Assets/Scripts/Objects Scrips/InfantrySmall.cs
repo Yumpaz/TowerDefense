@@ -17,7 +17,7 @@ public class InfantrySmall : MonoBehaviour
         speed = 2;
         cost = 1;
         range = 2;
-        speed *= 10;
+        speed *= 25;
         type = 0;
     }
 

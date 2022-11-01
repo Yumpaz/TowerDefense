@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
         Instantiate(TestingObject);
     }
 
-    // Update is called once per frame
     void Update()
     {
         switch (_gameState)
@@ -63,6 +62,7 @@ public class GameManager : MonoBehaviour
     {
         Testing.Instance.ReStartGame();
         running = false;
+        Testing.Instance.changeenemies = 0;
         UpdateGameState(GameState.simulationend);
     }
 }

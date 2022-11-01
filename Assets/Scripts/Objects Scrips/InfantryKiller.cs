@@ -17,7 +17,7 @@ public class InfantryKiller : MonoBehaviour
         speed = 2;
         cost = 3;
         range = 1;
-        speed *= 10;
+        speed *= 25;
         type = 2;
     }
 
