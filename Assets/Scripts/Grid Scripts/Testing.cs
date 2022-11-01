@@ -93,7 +93,7 @@ public class Testing : MonoBehaviour
                     #endregion
                     if (changeenemies != 0)
                     {
-                        if (changeenemies > 2)
+                        if (changeenemies == 3)
                         {
                             changeenemies = 0;
                         }
@@ -184,7 +184,7 @@ public class Testing : MonoBehaviour
                             enemycost = 2;
                         }
                         #endregion
-                        changeenemies = 1;
+                        changeenemies += 1;
                     }
                     #region AutoPlayerPrepare
                     while (credits - cost >= 0)
