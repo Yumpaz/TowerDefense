@@ -12,8 +12,8 @@ public class Testing : MonoBehaviour
     private Pathfinding pathfinding;
     List<PathNode> minpath;
     List<PathNode> minpathkiller;
-    private int type = 3, credits, cost, enemycredits, enemycost, random, randomx, randomy, minpathCost, minpathKillerCost, x, y;
-    public int starting, changeenemies;
+    private int credits, cost, enemycredits, enemycost, random, randomx, randomy, minpathCost, minpathKillerCost, x, y;
+    public int starting, changeenemies, type = 3;
     public string resultados;
     #region Lists
     public List<GameObject> PWUnits = new List<GameObject>();
@@ -187,6 +187,7 @@ public class Testing : MonoBehaviour
                         changeenemies += 1;
                     }
                     #region AutoPlayerPrepare
+                    /*
                     while (credits - cost >= 0)
                     {
                         tcredits.text = "Credits: " + credits;
@@ -246,68 +247,75 @@ public class Testing : MonoBehaviour
                         }
                         tcredits.text = "Credits: " + credits;
                         cost = 1;
-                    }
+                    }*/
                     #endregion
                     GetPositions();
                     starting = 1;
                 }
-                GameManager.Instance.UpdateGameState(GameManager.GameState.play);
+                //GameManager.Instance.UpdateGameState(GameManager.GameState.play);
                 #region PlayerPrepare
-                tcredits.text = "Credits: " + credits;
-                if (Input.GetMouseButtonDown(0) && SelectionActive == true)
+                if(credits > 0)
                 {
-                    if (pathfinding.GetGrid().GetGridObject(GetMouseWorldPosition()).GetValue() == 1)
+                    tcredits.text = "Credits: " + credits;
+                    if (Input.GetMouseButtonDown(0) && SelectionActive == true)
                     {
-                        switch (type)
+                        if (pathfinding.GetGrid().GetGridObject(GetMouseWorldPosition()).GetValue() == 1)
                         {
-                            case (0):
-                                cost = 1;
-                                if (credits >= cost)
-                                {
-                                    pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
-                                    pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), x, y, -1));
-                                    Object1 = Instantiate(iftsInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
-                                                          pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
-                                    iftsscript = Object1.GetComponent<InfantrySmall>();
-                                    iftsscript.UpdatePosition(x, y);
-                                    IFTSUnits.Add(Object1);
-                                    pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
-                                    credits -= cost;
-                                }
-                                break;
-                            case (1):
-                                cost = 2;
-                                if (credits >= cost)
-                                {
-                                    pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
-                                    pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), x, y, -1));
-                                    Object1 = Instantiate(ifthInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
-                                                          pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
-                                    ifthscript = Object1.GetComponent<InfantryHeavy>();
-                                    ifthscript.UpdatePosition(x, y); ;
-                                    IFTHUnits.Add(Object1);
-                                    pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
-                                    credits -= cost;
-                                }
-                                break;
-                            case (2):
-                                cost = 3;
-                                if (credits >= cost)
-                                {
-                                    pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
-                                    pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), x, y, -1));
-                                    Object1 = Instantiate(iftkInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
-                                                          pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
-                                    iftkscript = Object1.GetComponent<InfantryKiller>();
-                                    iftkscript.UpdatePosition(x, y);
-                                    IFTKUnits.Add(Object1);
-                                    pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
-                                    credits -= cost;
-                                }
-                                break;
+                            switch (type)
+                            {
+                                case (0):
+                                    cost = 1;
+                                    if (credits >= cost)
+                                    {
+                                        pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
+                                        pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), x, y, -1));
+                                        Object1 = Instantiate(iftsInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                                              pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                                        iftsscript = Object1.GetComponent<InfantrySmall>();
+                                        iftsscript.UpdatePosition(x, y);
+                                        IFTSUnits.Add(Object1);
+                                        pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
+                                        credits -= cost;
+                                    }
+                                    break;
+                                case (1):
+                                    cost = 2;
+                                    if (credits >= cost)
+                                    {
+                                        pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
+                                        pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), x, y, -1));
+                                        Object1 = Instantiate(ifthInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                                              pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                                        ifthscript = Object1.GetComponent<InfantryHeavy>();
+                                        ifthscript.UpdatePosition(x, y); ;
+                                        IFTHUnits.Add(Object1);
+                                        pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
+                                        credits -= cost;
+                                    }
+                                    break;
+                                case (2):
+                                    cost = 3;
+                                    if (credits >= cost)
+                                    {
+                                        pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
+                                        pathfinding.GetGrid().SetGridObject(GetMouseWorldPosition(), new PathNode(pathfinding.GetGrid(), x, y, -1));
+                                        Object1 = Instantiate(iftkInstance, pathfinding.GetGrid().GetWorldPosition(x, y) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                                              pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                                        iftkscript = Object1.GetComponent<InfantryKiller>();
+                                        iftkscript.UpdatePosition(x, y);
+                                        IFTKUnits.Add(Object1);
+                                        pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
+                                        credits -= cost;
+                                    }
+                                    break;
+                            }
                         }
+                        SelectionState(false);
                     }
-                    SelectionState(false);
+                }
+                if(credits == 0)
+                {
+                    GameManager.Instance.UpdateGameState(GameManager.GameState.play);
                 }
                 #endregion
                 break;

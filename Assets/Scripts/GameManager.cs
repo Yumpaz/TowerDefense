@@ -69,6 +69,24 @@ public class GameManager : MonoBehaviour
         UpdateGameState(GameState.simulationend);
     }
 
+    public void SetType0()
+    {
+        Testing.Instance.type = 0;
+        Testing.Instance.SelectionState(true);
+    }
+
+    public void SetType1()
+    {
+        Testing.Instance.type = 1;
+        Testing.Instance.SelectionState(true);
+    }
+
+    public void SetType2()
+    {
+        Testing.Instance.type = 2;
+        Testing.Instance.SelectionState(true);
+    }
+
     public void CreateTextFile()
     {
         string txtDocName = Application.streamingAssetsPath + "/Output/" + "Positions" + ".txt";
