@@ -87,6 +87,11 @@ public class GameManager : MonoBehaviour
         Testing.Instance.SelectionState(true);
     }
 
+    public void AutoSet()
+    {
+        Testing.Instance.GetPlayerAutoPositions();
+    }
+
     public void CreateTextFile()
     {
         string txtDocName = Application.streamingAssetsPath + "/Output/" + "Positions" + ".txt";

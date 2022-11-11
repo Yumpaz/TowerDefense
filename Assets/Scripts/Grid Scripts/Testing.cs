@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Testing : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class Testing : MonoBehaviour
     List<PathNode> minpathkiller;
     private int credits, cost, enemycredits, enemycost, random, randomx, randomy, minpathCost, minpathKillerCost, x, y;
     public int starting, changeenemies, type = 3;
-    public string resultados;
+    public string resultados, recommend = "0,0,1,1,0,4,4,2,-1,-1,-1,-1,-1,-1,-1,2,3,4,3,4,4,0,1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,1,2,2,2,-1,-1,-1,-1,-1,-1,-1";
     #region Lists
     public List<GameObject> PWUnits = new List<GameObject>();
     public List<GameObject> TWHUnits = new List<GameObject>();
@@ -26,6 +27,9 @@ public class Testing : MonoBehaviour
     public List<GameObject> IFTSUnits = new List<GameObject>();
     public List<GameObject> IFTHUnits = new List<GameObject>();
     public List<GameObject> IFTKUnits = new List<GameObject>();
+    public List<int> posx = new List<int>();
+    public List<int> posy = new List<int>();
+    public List<int> eltype = new List<int>();
     #endregion
     #region ObjectsScripts
     private PowerCore pcscript;
@@ -43,6 +47,7 @@ public class Testing : MonoBehaviour
         tcredits = GameManager.Instance.tcredits;
         tecredits = GameManager.Instance.tecredits;
         changeenemies = 0;
+        recommend = "0,0,1,1,0,4,4,2,-1,-1,-1,-1,-1,-1,-1,2,3,4,3,4,4,0,1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,1,2,2,2,-1,-1,-1,-1,-1,-1,-1";
     }
 
     private void Update()
@@ -251,6 +256,7 @@ public class Testing : MonoBehaviour
                     #endregion
                     GetPositions();
                     starting = 1;
+                    GetEnemiesPosition();
                 }
                 //GameManager.Instance.UpdateGameState(GameManager.GameState.play);
                 #region PlayerPrepare
@@ -610,6 +616,167 @@ public class Testing : MonoBehaviour
         return worldPosition;
     }
 
+    public void GetPlayerAutoPositions()
+    {
+        int contador = 0;
+        Debug.Log(Testing.Instance.recommend);
+        foreach (string posi in Testing.Instance.recommend.Split(','))
+        {
+            if (contador < 15)
+            {
+                posx.Add(int.Parse(posi));
+                
+            }
+            if (contador >= 15 && contador < 31)
+            {
+                posy.Add(int.Parse(posi));
+                
+            }
+            if (contador >= 31)
+            {
+                eltype.Add(int.Parse(posi));
+                
+            }
+            contador += 1;
+        }
+        Debug.Log("X");
+        foreach (int a in posx)
+        {
+            Debug.Log(a);
+        }
+        Debug.Log("Y");
+        foreach (int a in posy)
+        {
+            Debug.Log(a);
+        }
+        Debug.Log("TYPE");
+        foreach (int a in eltype)
+        {
+            Debug.Log(a);
+        }
+        for(int i = 0; i < eltype.Count; i++)
+        {
+            Debug.Log("Here");
+            Debug.Log(eltype[i]);
+            if (eltype[i] == 0)
+            {
+                Debug.Log("Es 0");
+                randomx = posx[i];
+                randomy = posy[i];
+                Object1 = Instantiate(iftsInstance, pathfinding.GetGrid().GetWorldPosition(randomx, randomy) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                  pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                iftsscript = Object1.GetComponent<InfantrySmall>();
+                iftsscript.UpdatePosition(randomx, randomy);
+                IFTSUnits.Add(Object1);
+                pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
+                                                    new PathNode(pathfinding.GetGrid(), randomx, randomy, -1));
+                pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
+            }
+            if (eltype[i] == 1)
+            {
+                Debug.Log("Es 1");
+                randomx = posx[i];
+                randomy = posy[i];
+                Object1 = Instantiate(ifthInstance, pathfinding.GetGrid().GetWorldPosition(randomx, randomy) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                                      pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                ifthscript = Object1.GetComponent<InfantryHeavy>();
+                ifthscript.UpdatePosition(randomx, randomy);
+                IFTHUnits.Add(Object1);
+                pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
+                                                    new PathNode(pathfinding.GetGrid(), randomx, randomy, -1));
+                pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
+            }
+            if (eltype[i] == 2)
+            {
+                Debug.Log("Es 2");
+                randomx = posx[i];
+                randomy = posy[i];
+                Object1 = Instantiate(iftkInstance, pathfinding.GetGrid().GetWorldPosition(randomx, randomy) + new Vector3(pathfinding.GetGrid().GetCellSize(),
+                                                      pathfinding.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
+                iftkscript = Object1.GetComponent<InfantryKiller>();
+                iftkscript.UpdatePosition(randomx, randomy);
+                IFTKUnits.Add(Object1);
+                pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
+                                                    new PathNode(pathfinding.GetGrid(), randomx, randomy, -1));
+                pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
+            }
+        }
+    }
+
+    private void GetEnemiesPosition()
+    {
+        int contador = 0;
+        string positions = "";
+        foreach (int x in TWSUnitsX)
+        {
+            positions += x+",";
+            contador += 1;
+        }
+        foreach (int x in TWHUnitsX)
+        {
+            positions += x + ",";
+            contador += 1;
+        }
+        while (contador < 7)
+        {
+            positions += "-1,";
+            contador += 1;
+        }
+        contador = 0;
+        foreach (int y in TWSUnitsY)
+        {
+            positions += y + ",";
+            contador += 1;
+        }
+        foreach (int y in TWHUnitsY)
+        {
+            positions += y + ",";
+            contador += 1;
+        }
+        while (contador < 7)
+        {
+            positions += "-1,";
+            contador += 1;
+        }
+        contador = 0;
+        foreach (GameObject unit in TWSUnits)
+        {
+            positions += unit.GetComponent<TowerSmall>().GetUnitType() + ",";
+            contador += 1;
+        }
+        foreach (GameObject unit in TWHUnits)
+        {
+            positions += unit.GetComponent<TowerHeavy>().GetUnitType() + ",";
+            contador += 1;
+        }
+        while (contador < 7)
+        {
+            positions += "-1,";
+            contador += 1;
+        }
+        positions = positions.TrimEnd(',');
+        StartCoroutine(GetDataToPlay(positions));
+    }
+
+    IEnumerator GetDataToPlay(string position)
+    {
+        string url = "http://127.0.0.1:5000/predecir/?input="+position;
+        Debug.Log(url);
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+            if(request.isNetworkError || request.isHttpError)
+            {
+                recommend = "0,0,1,1,0,4,4,2,-1,-1,-1,-1,-1,-1,-1,2,3,4,3,4,4,0,1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,1,2,2,2,-1,-1,-1,-1,-1,-1,-1";
+            }
+            else
+            {
+                recommend = request.downloadHandler.text;
+                Debug.Log(recommend);
+            }
+        }
+    }
+
     public void SetType0()
     {
         type = 0;
@@ -746,7 +913,7 @@ public class Testing : MonoBehaviour
         }
         while (contador < 15)
         {
-            resultados += "NULL,";
+            resultados += "-1,";
             contador += 1;
         }
         //PLAYER Y
@@ -768,7 +935,7 @@ public class Testing : MonoBehaviour
         }
         while (contador < 15)
         {
-            resultados += "NULL,";
+            resultados += "-1,";
             contador += 1;
         }
         //PLAYER TYPE
@@ -790,7 +957,7 @@ public class Testing : MonoBehaviour
         }
         while (contador < 15)
         {
-            resultados += "NULL,";
+            resultados += "-1,";
             contador += 1;
         }
         //ENEMY X
@@ -807,7 +974,7 @@ public class Testing : MonoBehaviour
         }
         while (contador < 7)
         {
-            resultados += "NULL,";
+            resultados += "-1,";
             contador += 1;
         }
         //ENEMY Y
@@ -824,7 +991,7 @@ public class Testing : MonoBehaviour
         }
         while (contador < 7)
         {
-            resultados += "NULL,";
+            resultados += "-1,";
             contador += 1;
         }
         //ENEMY TYPE
@@ -841,7 +1008,7 @@ public class Testing : MonoBehaviour
         }
         while (contador < 7)
         {
-            resultados += "NULL,";
+            resultados += "-1,";
             contador += 1;
         }
     }
