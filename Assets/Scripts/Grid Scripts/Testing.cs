@@ -581,11 +581,11 @@ public class Testing : MonoBehaviour
             case GameManager.GameState.end:
                 if (PWUnits.Count == 0)
                 {
-                    resultados += "Win";
+                    resultados += "1";
                 }
                 else
                 {
-                    resultados += "Lose";
+                    resultados += "0";
                 }
                 Debug.Log(resultados);
                 GameManager.Instance.AddTextToFile(resultados);
