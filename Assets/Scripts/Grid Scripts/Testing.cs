@@ -582,18 +582,11 @@ public class Testing : MonoBehaviour
                 if (PWUnits.Count == 0)
                 {
                     resultados += "1";
-<<<<<<< Updated upstream
-=======
                     GameManager.Instance.WinState.text = "Win";
->>>>>>> Stashed changes
                 }
                 else
                 {
-                    resultados += "0";
-<<<<<<< Updated upstream
-=======
                     GameManager.Instance.WinState.text = "Lose";
->>>>>>> Stashed changes
                 }
                 Debug.Log(resultados);
                 GameManager.Instance.AddTextToFile(resultados);
