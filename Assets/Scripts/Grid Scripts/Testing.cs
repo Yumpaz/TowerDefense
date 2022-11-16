@@ -15,7 +15,7 @@ public class Testing : MonoBehaviour
     List<PathNode> minpathkiller;
     private int credits, cost, enemycredits, enemycost, random, randomx, randomy, minpathCost, minpathKillerCost, x, y;
     public int starting, changeenemies, type = 3;
-    public string resultados, recommend = "0,0,1,1,0,4,4,2,-1,-1,-1,-1,-1,-1,-1,2,3,4,3,4,4,0,1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,1,2,2,2,-1,-1,-1,-1,-1,-1,-1";
+    public string resultados, recommend;
     #region Lists
     public List<GameObject> PWUnits = new List<GameObject>();
     public List<GameObject> TWHUnits = new List<GameObject>();
@@ -260,7 +260,7 @@ public class Testing : MonoBehaviour
                 }
                 //GameManager.Instance.UpdateGameState(GameManager.GameState.play);
                 #region PlayerPrepare
-                if(credits > 0)
+                if (credits > 0)
                 {
                     tcredits.text = "Credits: " + credits;
                     if (Input.GetMouseButtonDown(0) && SelectionActive == true)
@@ -319,7 +319,7 @@ public class Testing : MonoBehaviour
                         SelectionState(false);
                     }
                 }
-                if(credits == 0)
+                if (credits == 0)
                 {
                     GameManager.Instance.UpdateGameState(GameManager.GameState.play);
                 }
@@ -334,7 +334,7 @@ public class Testing : MonoBehaviour
                     minpathCost = 999999999;
                     foreach (GameObject enemyUnit in TWSUnits)
                     {
-                        if(enemyUnit != null)
+                        if (enemyUnit != null)
                         {
                             List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
                                                                    currentUnit.GetComponent<InfantrySmall>().GetY(),
@@ -352,7 +352,7 @@ public class Testing : MonoBehaviour
                     }
                     foreach (GameObject enemyUnit in TWHUnits)
                     {
-                        if(enemyUnit != null)
+                        if (enemyUnit != null)
                         {
                             List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
                                                                    currentUnit.GetComponent<InfantrySmall>().GetY(),
@@ -370,7 +370,7 @@ public class Testing : MonoBehaviour
                     }
                     foreach (GameObject enemyUnit in PWUnits)
                     {
-                        if(enemyUnit != null)
+                        if (enemyUnit != null)
                         {
                             List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantrySmall>().GetX(),
                                                                    currentUnit.GetComponent<InfantrySmall>().GetY(),
@@ -403,7 +403,7 @@ public class Testing : MonoBehaviour
                     minpathCost = 999999999;
                     foreach (GameObject enemyUnit in TWSUnits)
                     {
-                        if(enemyUnit != null)
+                        if (enemyUnit != null)
                         {
                             List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantryHeavy>().GetX(),
                                                                    currentUnit.GetComponent<InfantryHeavy>().GetY(),
@@ -421,7 +421,7 @@ public class Testing : MonoBehaviour
                     }
                     foreach (GameObject enemyUnit in TWHUnits)
                     {
-                        if(enemyUnit != null)
+                        if (enemyUnit != null)
                         {
                             List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantryHeavy>().GetX(),
                                                                    currentUnit.GetComponent<InfantryHeavy>().GetY(),
@@ -439,7 +439,7 @@ public class Testing : MonoBehaviour
                     }
                     foreach (GameObject enemyUnit in PWUnits)
                     {
-                        if(enemyUnit != null)
+                        if (enemyUnit != null)
                         {
                             List<PathNode> path = pathfinding.FindPath(currentUnit.GetComponent<InfantryHeavy>().GetX(),
                                                                    currentUnit.GetComponent<InfantryHeavy>().GetY(),
@@ -531,7 +531,7 @@ public class Testing : MonoBehaviour
                         }
                     }*/
                     #endregion
-                    if(minpathkiller != null)
+                    if (minpathkiller != null)
                     {
                         if (pathfinding.GetGrid()._Debug)
                         {
@@ -551,7 +551,7 @@ public class Testing : MonoBehaviour
                     pathfinding.GetGrid().GetXY(GetMouseWorldPosition(), out x, out y);
                     foreach (GameObject unit in TWSUnits)
                     {
-                        if(unit.GetComponent<TowerSmall>().GetX() == x && unit.GetComponent<TowerSmall>().GetY() == y)
+                        if (unit.GetComponent<TowerSmall>().GetX() == x && unit.GetComponent<TowerSmall>().GetY() == y)
                         {
                             TWSUnits.Remove(unit);
                             unit.GetComponent<TowerSmall>().Delete(pathfinding.GetGrid());
@@ -566,7 +566,7 @@ public class Testing : MonoBehaviour
                         }
                     }
                 }
-                if(PWUnits.Count < 1)
+                if (PWUnits.Count < 1)
                 {
                     GameManager.Instance.UpdateGameState(GameManager.GameState.end);
                 }
@@ -582,16 +582,24 @@ public class Testing : MonoBehaviour
                 if (PWUnits.Count == 0)
                 {
                     resultados += "1";
+<<<<<<< Updated upstream
+=======
+                    GameManager.Instance.WinState.text = "Win";
+>>>>>>> Stashed changes
                 }
                 else
                 {
                     resultados += "0";
+<<<<<<< Updated upstream
+=======
+                    GameManager.Instance.WinState.text = "Lose";
+>>>>>>> Stashed changes
                 }
                 Debug.Log(resultados);
                 GameManager.Instance.AddTextToFile(resultados);
                 ReStartGame();
                 break;
-            #endregion
+                #endregion
         }
     }
 
@@ -618,49 +626,33 @@ public class Testing : MonoBehaviour
 
     public void GetPlayerAutoPositions()
     {
+        GameManager.Instance.WinState.text = "";
         int contador = 0;
-        Debug.Log(Testing.Instance.recommend);
         foreach (string posi in Testing.Instance.recommend.Split(','))
         {
             if (contador < 15)
             {
                 posx.Add(int.Parse(posi));
-                
+
             }
             if (contador >= 15 && contador < 31)
             {
                 posy.Add(int.Parse(posi));
-                
+
             }
             if (contador >= 31)
             {
                 eltype.Add(int.Parse(posi));
-                
+
             }
             contador += 1;
         }
-        Debug.Log("X");
-        foreach (int a in posx)
+        for (int i = 0; i < eltype.Count; i++)
         {
-            Debug.Log(a);
-        }
-        Debug.Log("Y");
-        foreach (int a in posy)
-        {
-            Debug.Log(a);
-        }
-        Debug.Log("TYPE");
-        foreach (int a in eltype)
-        {
-            Debug.Log(a);
-        }
-        for(int i = 0; i < eltype.Count; i++)
-        {
-            Debug.Log("Here");
-            Debug.Log(eltype[i]);
+            credits = 15;
             if (eltype[i] == 0)
             {
-                Debug.Log("Es 0");
+                cost = 1;
                 randomx = posx[i];
                 randomy = posy[i];
                 Object1 = Instantiate(iftsInstance, pathfinding.GetGrid().GetWorldPosition(randomx, randomy) + new Vector3(pathfinding.GetGrid().GetCellSize(),
@@ -671,10 +663,11 @@ public class Testing : MonoBehaviour
                 pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
                                                     new PathNode(pathfinding.GetGrid(), randomx, randomy, -1));
                 pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
+                credits -= cost;
             }
             if (eltype[i] == 1)
             {
-                Debug.Log("Es 1");
+                cost = 2;
                 randomx = posx[i];
                 randomy = posy[i];
                 Object1 = Instantiate(ifthInstance, pathfinding.GetGrid().GetWorldPosition(randomx, randomy) + new Vector3(pathfinding.GetGrid().GetCellSize(),
@@ -685,10 +678,11 @@ public class Testing : MonoBehaviour
                 pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
                                                     new PathNode(pathfinding.GetGrid(), randomx, randomy, -1));
                 pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
+                credits -= cost;
             }
             if (eltype[i] == 2)
             {
-                Debug.Log("Es 2");
+                cost = 3;
                 randomx = posx[i];
                 randomy = posy[i];
                 Object1 = Instantiate(iftkInstance, pathfinding.GetGrid().GetWorldPosition(randomx, randomy) + new Vector3(pathfinding.GetGrid().GetCellSize(),
@@ -699,8 +693,11 @@ public class Testing : MonoBehaviour
                 pathfinding.GetGrid().SetGridObject(pathfinding.GetGrid().GetWorldPosition(randomx, randomy),
                                                     new PathNode(pathfinding.GetGrid(), randomx, randomy, -1));
                 pathfinding.GetNode(randomx, randomy).SetIsWalkable(!pathfinding.GetNode(randomx, randomy).isWalkable);
+                credits -= cost;
             }
         }
+        tcredits.text = "Credits: 0";
+        GameManager.Instance.UpdateGameState(GameManager.GameState.play);
     }
 
     private void GetEnemiesPosition()
@@ -709,7 +706,7 @@ public class Testing : MonoBehaviour
         string positions = "";
         foreach (int x in TWSUnitsX)
         {
-            positions += x+",";
+            positions += x + ",";
             contador += 1;
         }
         foreach (int x in TWHUnitsX)
@@ -758,20 +755,29 @@ public class Testing : MonoBehaviour
         StartCoroutine(GetDataToPlay(positions));
     }
 
+    [System.Serializable]
+    public class Fact
+    {
+        public string prediction;
+    }
+
     IEnumerator GetDataToPlay(string position)
     {
-        string url = "http://127.0.0.1:5000/predecir/?input="+position;
+        string url = "http://towerdeffense.herokuapp.com/predecir/?input=" + position;
         Debug.Log(url);
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
             yield return request.SendWebRequest();
-            if(request.isNetworkError || request.isHttpError)
+            if (request.isHttpError || request.isNetworkError)
             {
-                recommend = "0,0,1,1,0,4,4,2,-1,-1,-1,-1,-1,-1,-1,2,3,4,3,4,4,0,1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,1,2,2,2,-1,-1,-1,-1,-1,-1,-1";
+                Debug.LogError(request.error);
             }
             else
             {
-                recommend = request.downloadHandler.text;
+                Debug.Log("Succesfull");
+                var text = request.downloadHandler.text;
+                Fact cfact = JsonUtility.FromJson<Fact>(text);
+                recommend = cfact.prediction;
                 Debug.Log(recommend);
             }
         }
@@ -863,6 +869,9 @@ public class Testing : MonoBehaviour
         {
             Destroy(wall);
         }
+        posx.Clear();
+        posy.Clear();
+        eltype.Clear();
         #endregion
         starting = 0;
         GameManager.Instance.UpdateGameState(GameManager.GameState.prepare);

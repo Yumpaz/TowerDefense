@@ -7,7 +7,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject TestingObject;
-    [SerializeField] public TextMeshProUGUI tcredits, tecredits;
+    [SerializeField] public TextMeshProUGUI tcredits, tecredits, WinState;
     private bool running = false;
     public GameState _gameState = GameState.simulationwait;
     public static GameManager Instance { get; private set; }
@@ -57,6 +57,8 @@ public class GameManager : MonoBehaviour
         if(!running)
         {
             running = true;
+            Testing.Instance.posx.Clear();
+            Testing.Instance.posy.Clear();
             UpdateGameState(GameState.simulationstart);
         }
     }
