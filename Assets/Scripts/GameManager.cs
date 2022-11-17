@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject TestingObject;
     [SerializeField] public TextMeshProUGUI tcredits, tecredits, WinState;
-    private bool running = false;
+    private bool running = false, started = false;
     public GameState _gameState = GameState.simulationwait;
     public static GameManager Instance { get; private set; }
 
@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
 
     public void StartSimulation()
     {
+        started = true;
         if(!running)
         {
             running = true;
@@ -65,10 +66,14 @@ public class GameManager : MonoBehaviour
 
     public void StopSimulation()
     {
-        Testing.Instance.ReStartGame();
-        running = false;
-        Testing.Instance.changeenemies = 0;
-        UpdateGameState(GameState.simulationend);
+        if (started)
+        {
+            Testing.Instance.ReStartGame();
+            running = false;
+            Testing.Instance.changeenemies = 0;
+            UpdateGameState(GameState.simulationend);
+            started = false;
+        }
     }
 
     public void SetType0()
@@ -91,7 +96,10 @@ public class GameManager : MonoBehaviour
 
     public void AutoSet()
     {
-        Testing.Instance.GetPlayerAutoPositions();
+        if (started)
+        {
+            Testing.Instance.GetPlayerAutoPositions();
+        }
     }
 
     public void CreateTextFile()
