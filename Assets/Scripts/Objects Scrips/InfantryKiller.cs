@@ -9,6 +9,7 @@ public class InfantryKiller : MonoBehaviour
     [SerializeField] private GameObject bullet, bulletInstance;
     private List<PathNode> NodesInRange;
     private bool canMove = true, canShoot = true;
+    [SerializeField] private Sprite empty, basesprite;
     Animator animator;
 
     private void Awake()
@@ -192,6 +193,16 @@ public class InfantryKiller : MonoBehaviour
     public void LoseHealth(int damage)
     {
         life -= damage;
+    }
+
+    private void Hide()
+    {
+        this.GetComponent<SpriteRenderer>().sprite = empty;
+    }
+
+    private void Show()
+    {
+        this.GetComponent<SpriteRenderer>().sprite = basesprite;
     }
     #endregion
     public void Delete(Grid<PathNode> grid)
