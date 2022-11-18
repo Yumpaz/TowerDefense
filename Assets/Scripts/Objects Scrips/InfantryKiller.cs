@@ -9,6 +9,12 @@ public class InfantryKiller : MonoBehaviour
     [SerializeField] private GameObject bullet, bulletInstance;
     private List<PathNode> NodesInRange;
     private bool canMove = true, canShoot = true;
+    Animator animator;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     void Start()
     {
@@ -81,6 +87,7 @@ public class InfantryKiller : MonoBehaviour
             Vector3 targetPosition = pathVectorList[currentPathIndex];
             if (Vector3.Distance(transform.position, targetPosition) > 1f)
             {
+                animator.SetFloat("Blend", 1);
                 Vector3 moveDir = (targetPosition - transform.position).normalized;
                 float distanceBefore = Vector3.Distance(transform.position, targetPosition);
                 transform.position = transform.position + speed * Time.deltaTime * moveDir;
@@ -98,6 +105,7 @@ public class InfantryKiller : MonoBehaviour
 
     private void StopMoving()
     {
+        animator.SetFloat("Blend", 0);
         pathVectorList = null;
     }
     #endregion
@@ -138,6 +146,7 @@ public class InfantryKiller : MonoBehaviour
 
     public void StartAttacking(PathNode node)
     {
+        animator.SetFloat("Blend", 0);
         bulletInstance = Instantiate(bullet, Pathfinding.Instance.GetGrid().GetWorldPosition(x, y) + new Vector3(Pathfinding.Instance.GetGrid().GetCellSize(),
                                      Pathfinding.Instance.GetGrid().GetCellSize()) * .5f, Quaternion.identity);
         Vector3 shootDir = (Pathfinding.Instance.GetGrid().GetWorldPosition(node.GetX(), node.GetY()) - Pathfinding.Instance.GetGrid().GetWorldPosition(x, y)).normalized;
